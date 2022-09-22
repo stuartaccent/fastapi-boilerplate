@@ -2,7 +2,15 @@ from typing import Optional
 from uuid import UUID
 
 from fastapi_users import schemas as users_schemas
-from pydantic import EmailStr, constr
+from pydantic import EmailStr, constr, BaseModel
+
+
+class MessageRead(BaseModel):
+    id: UUID
+    comment: str
+
+    class Config:
+        orm_mode = True
 
 
 class UserCreate(users_schemas.CreateUpdateDictModel):
