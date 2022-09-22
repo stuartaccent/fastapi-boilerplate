@@ -9,6 +9,7 @@ from app.config import settings
 from app.database import tables  # dont remove
 
 from app.api.routes.root import router as root_router
+from app.api.routes.message import router as message_router
 from app.api.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, fastapi_users
 
@@ -72,6 +73,10 @@ app.include_router(
     fastapi_users.get_verify_router(UserRead),
     prefix="/auth",
     tags=["auth"],
+)
+app.include_router(
+    message_router,
+    tags=["messages"],
 )
 app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
