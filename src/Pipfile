@@ -1,0 +1,28 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+autoflake = "*"
+black = "*"
+flake8 = "*"
+httpx = "*"
+isort = "*"
+mypy = "*"
+pytest = "*"
+pytest-asyncio = "*"
+
+[requires]
+python_version = "3.10"
+
+[packages]
+alembic = "*"
+argon2-cffi = "*"
+asyncpg = "*"
+fastapi = {extras = ["all"], version = "*"}
+fastapi-users = {extras = ["sqlalchemy"], version = "*"}
+passlib = {extras = ["bcrypt"], version = "*"}
+python-jose = {extras = ["cryptography"], version = "*"}
+sentry-sdk = {extras = ["fastapi"], version = "*"}
+sqlalchemy = "*"
