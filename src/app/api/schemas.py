@@ -2,7 +2,7 @@ from typing import Optional
 from uuid import UUID
 
 from fastapi_users import schemas as users_schemas
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import EmailStr, constr
 
 
 class UserCreate(users_schemas.CreateUpdateDictModel):

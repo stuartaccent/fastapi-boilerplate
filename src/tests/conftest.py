@@ -1,10 +1,11 @@
 # isort: off
-from os import environ
-
-environ["DATABASE_URL"] = "postgresql+asyncpg://postgres:password@db:5432/appdb_test"
-
 import asyncio
 import contextlib
+from os import environ
+
+if environ.get("TEST_DATABASE_URL"):
+    environ["DATABASE_URL"] = environ["TEST_DATABASE_URL"]
+
 
 import pytest
 import pytest_asyncio
@@ -15,15 +16,12 @@ from accentdatabase.testing import recreate_postgres_database
 from alembic import command
 from alembic.config import Config
 from httpx import AsyncClient
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
-from starlette import status
 
 from app.database import tables
 
 from app.api.schemas import UserCreate
-from app.config import settings
 from app.main import app
 from app.users import (
     get_user_manager,

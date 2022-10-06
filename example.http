@@ -2,7 +2,7 @@
 POST http://localhost/auth/token/login
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=&username=admin%40example.com&password=password&scope=&client_id=&client_secret=
+grant_type=&username=admin%40example.com&password=password
 
 > {%
     client.global.set("auth_token", response.body.access_token);
@@ -10,5 +10,10 @@ grant_type=&username=admin%40example.com&password=password&scope=&client_id=&cli
 
 ### Part 2. Root.
 GET http://localhost
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+### Part 3. Users me.
+GET http://localhost/users/me
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json

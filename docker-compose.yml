@@ -25,6 +25,7 @@ services:
         PIPENV_INSTALL_OPTIONS: --dev
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb
+      TEST_DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb_test
       EMAIL_HOST: mail
       EMAIL_PORT: 1025
       SECRET_KEY: 358cb7a6f3a39320d0f9014c7e5406992acfdfdec22c1eca0f7ca7fa8c747928
