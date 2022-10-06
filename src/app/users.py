@@ -1,6 +1,7 @@
 import uuid
 from typing import Optional
 
+from accentdatabase.session import get_session
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport
@@ -12,7 +13,6 @@ from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
-from app.database.session import get_session
 from app.database.tables import AccessToken, User
 
 

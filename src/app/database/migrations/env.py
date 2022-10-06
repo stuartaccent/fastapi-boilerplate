@@ -1,6 +1,8 @@
 import asyncio
 from logging.config import fileConfig
 
+from accentdatabase.base import Base
+from accentdatabase.config import config as db_config
 from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
@@ -10,11 +12,7 @@ from app.database import tables
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
-# Configure Alembic to use our database_url and our table definitions...
-from app.config import settings
-
-config.set_main_option("sqlalchemy.url", str(settings.database_url))
+config.set_main_option("sqlalchemy.url", str(db_config.url))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -24,7 +22,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = tables.Base.metadata
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

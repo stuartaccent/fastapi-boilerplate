@@ -26,3 +26,4 @@ passlib = {extras = ["bcrypt"], version = "*"}
 python-jose = {extras = ["cryptography"], version = "*"}
 sentry-sdk = {extras = ["fastapi"], version = "*"}
 sqlalchemy = "*"
+accentdatabase = "*"

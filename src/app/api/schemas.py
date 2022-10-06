@@ -5,14 +5,6 @@ from fastapi_users import schemas as users_schemas
 from pydantic import BaseModel, EmailStr, constr
 
 
-class MessageRead(BaseModel):
-    id: UUID
-    comment: str
-
-    class Config:
-        orm_mode = True
-
-
 class UserCreate(users_schemas.CreateUpdateDictModel):
     email: EmailStr
     password: str

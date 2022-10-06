@@ -1,11 +1,17 @@
 # isort: off
+from os import environ
+
+environ["DATABASE_URL"] = "postgresql+asyncpg://postgres:password@db:5432/appdb_test"
 
 import asyncio
 import contextlib
-from copy import deepcopy
 
 import pytest
 import pytest_asyncio
+from accentdatabase.config import config
+from accentdatabase.engine import engine
+from accentdatabase.session import get_session
+from accentdatabase.testing import recreate_postgres_database
 from alembic import command
 from alembic.config import Config
 from httpx import AsyncClient
@@ -18,15 +24,13 @@ from app.database import tables
 
 from app.api.schemas import UserCreate
 from app.config import settings
-from app.database.session import get_session
-from app.encoders import json_serializer
 from app.main import app
-from app.users import get_user_manager, get_user_db
-
-db_url = deepcopy(settings.database_url)
-db_url_test = db_url.replace(db_url.path, f"{db_url.path}_test")
-db_url_maintenance = db_url.replace(db_url.path, "/postgres")
-db_test = db_url_test.split("/")[-1]
+from app.users import (
+    get_user_manager,
+    get_user_db,
+    get_token_db,
+    get_database_strategy,
+)
 
 
 def run_alembic_upgrade(connection, cfg):
@@ -43,35 +47,13 @@ def event_loop(request):
     loop.close()
 
 
-@pytest_asyncio.fixture(scope="session", autouse=True)
-async def db_fixture():
-    """
-    Drop and recreate our test database
-    This happens only once per test session.
-    """
+@pytest_asyncio.fixture(name="db_setup", scope="session", autouse=True)
+async def db_setup_fixture():
+    await recreate_postgres_database(config.url)
 
-    engine = create_async_engine(db_url_maintenance, isolation_level="AUTOCOMMIT")
-    async with engine.begin() as conn:
-        # drop all active database sessions
-        await conn.execute(
-            text(
-                f"""
-            SELECT pg_terminate_backend(pg_stat_activity.pid)
-            FROM pg_stat_activity
-            WHERE pg_stat_activity.datname = '{db_test}'
-            AND pid <> pg_backend_pid();"""
-            )
-        )
-        # drop the test database
-        await conn.execute(text(f"DROP DATABASE IF EXISTS {db_test};"))
-        # create the test database
-        await conn.execute(text(f"CREATE DATABASE {db_test};"))
 
-    # dispose of the engine
-    await engine.dispose()
-
-    # run the migrations using alembic
-    engine = create_async_engine(db_url_test, echo=True)
+@pytest_asyncio.fixture(name="db_migrations", scope="session", autouse=True)
+async def db_migrations_fixture(db_setup):
     async with engine.begin() as conn:
         await conn.run_sync(run_alembic_upgrade, Config("alembic.ini"))
 
@@ -79,24 +61,8 @@ async def db_fixture():
     await engine.dispose()
 
 
-@pytest_asyncio.fixture(name="engine", scope="session")
-async def engine_fixture():
-    """create a sqlalchemy engine to use for the entire test session"""
-
-    # create a sqlalchemy engine
-    engine = create_async_engine(
-        db_url_test,
-        future=True,
-        json_serializer=json_serializer,
-        echo=False,
-    )
-    yield engine
-    # dispose the engine
-    await engine.dispose()
-
-
 @pytest_asyncio.fixture(name="db_session")
-async def session_fixture(engine):
+async def db_session_fixture():
     """create a sqlalchemy session"""
 
     # create a sqlalchemy connection
@@ -159,13 +125,8 @@ async def create_user(db_session: AsyncSession):
 
 
 @pytest_asyncio.fixture(name="login_token")
-async def get_login_token(client: AsyncClient, user: tables.User):
-    response = await client.post(
-        "/auth/token/login",
-        data={
-            "username": user.email,
-            "password": "password",
-        },
-    )
-    assert response.status_code == status.HTTP_200_OK
-    return response.json()["access_token"]
+async def get_login_token(db_session: AsyncSession, user: tables.User):
+    get_token_db_context = contextlib.asynccontextmanager(get_token_db)
+    async with get_token_db_context(db_session) as token_db:
+        database_strategy = get_database_strategy(token_db)
+        return await database_strategy.write_token(user)

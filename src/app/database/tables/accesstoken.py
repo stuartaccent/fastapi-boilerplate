@@ -1,8 +1,7 @@
+from accentdatabase.base import Base
 from fastapi_users_db_sqlalchemy.access_token import SQLAlchemyBaseAccessTokenTable
 from sqlalchemy import Column, ForeignKey, text
 from sqlalchemy.dialects.postgresql import UUID
-
-from .base import Base
 
 
 class AccessToken(SQLAlchemyBaseAccessTokenTable, Base):
