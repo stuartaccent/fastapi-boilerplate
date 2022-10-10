@@ -1,6 +1,5 @@
 from typing import List, Optional
 
-from accentdatabase.config import AppConfig as DbAppConfig
 from pydantic import BaseSettings, HttpUrl, SecretStr
 
 
