@@ -26,3 +26,4 @@ fastapi-users = {extras = ["sqlalchemy"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
 python-jose = {extras = ["cryptography"], version = "*"}
 sentry-sdk = {extras = ["fastapi"], version = "*"}
+accentnotifications = {extras = ["smtp"], version = "*"}

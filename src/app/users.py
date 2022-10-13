@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database.tables import AccessToken, User
+from app.notifications.email import generate_email
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
@@ -33,7 +34,17 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         token: str,
         request: Optional[Request] = None,
     ):
-        print("on_after_forgot_password", user.id)
+        await generate_email(
+            to_address=user.email,
+            subject="Reset your password",
+            template_context={
+                "token": token,
+                "host": "http://localhost",
+                "site_name": "Example Inc.",
+            },
+            template_name_text="forgot_password.txt",
+            template_name_html="forgot_password.html",
+        )
 
     async def on_after_request_verify(
         self,
@@ -41,7 +52,17 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         token: str,
         request: Optional[Request] = None,
     ):
-        print("on_after_request_verify", user.id, token)
+        await generate_email(
+            to_address=user.email,
+            subject="Complete your registration",
+            template_context={
+                "token": token,
+                "host": "http://localhost",
+                "site_name": "Example Inc.",
+            },
+            template_name_text="verify_request.txt",
+            template_name_html="verify_request.html",
+        )
 
 
 context = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto")

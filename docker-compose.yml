@@ -18,6 +18,13 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
 
+  mail:
+    image: accent/mailhog
+    expose:
+      - "1025"
+    ports:
+      - "8025:8025"
+
   app:
     build:
       context: .
@@ -26,8 +33,9 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb
       TEST_DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb_test
-      EMAIL_HOST: mail
-      EMAIL_PORT: 1025
+      EMAIL_FROM_ADDRESS: no-reply@example.com
+      NOTIFICATIONS_SMTP_HOST: mail
+      NOTIFICATIONS_SMTP_PORT: 1025
       SECRET_KEY: 358cb7a6f3a39320d0f9014c7e5406992acfdfdec22c1eca0f7ca7fa8c747928
     depends_on:
       db:
