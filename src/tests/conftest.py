@@ -1,6 +1,5 @@
 # isort: off
 import asyncio
-import contextlib
 from os import environ
 
 if environ.get("TEST_DATABASE_URL"):
@@ -21,14 +20,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.database import tables
 
-from app.api.schemas import UserCreate
 from app.main import app
-from app.users import (
-    get_user_manager,
-    get_user_db,
-    get_token_db,
-    get_database_strategy,
-)
 
 
 def run_alembic_upgrade(connection, cfg):
@@ -99,32 +91,3 @@ async def client_fixture(db_session: AsyncSession):
         yield client
     # restore the original database session
     app.dependency_overrides.clear()
-
-
-@pytest_asyncio.fixture(name="user")
-async def create_user(db_session: AsyncSession):
-    get_user_db_context = contextlib.asynccontextmanager(get_user_db)
-    get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
-
-    async with get_user_db_context(db_session) as user_db:
-        async with get_user_manager_context(user_db) as user_manager:
-            user = await user_manager.create(
-                UserCreate(
-                    first_name="Some",
-                    last_name="One",
-                    email="someone@example.com",
-                    password="password",
-                )
-            )
-            user.is_verified = True
-            db_session.add(user)
-            await db_session.commit()
-            return user
-
-
-@pytest_asyncio.fixture(name="login_token")
-async def get_login_token(db_session: AsyncSession, user: tables.User):
-    get_token_db_context = contextlib.asynccontextmanager(get_token_db)
-    async with get_token_db_context(db_session) as token_db:
-        database_strategy = get_database_strategy(token_db)
-        return await database_strategy.write_token(user)

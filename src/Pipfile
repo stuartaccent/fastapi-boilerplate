@@ -20,11 +20,6 @@ python_version = "3.10"
 [packages]
 accentdatabase = "*"
 alembic = "*"
-argon2-cffi = "*"
 asyncpg = "*"
 fastapi = {extras = ["all"], version = "*"}
-fastapi-users = {extras = ["sqlalchemy"], version = "*"}
-passlib = {extras = ["bcrypt"], version = "*"}
-python-jose = {extras = ["cryptography"], version = "*"}
 sentry-sdk = {extras = ["fastapi"], version = "*"}
-accentnotifications = {extras = ["smtp"], version = "*"}
