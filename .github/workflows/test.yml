@@ -28,10 +28,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
 
     - name: Set up Python 3.10.x
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: 3.10.x
 
@@ -39,10 +39,10 @@ jobs:
       run: |
         python -m pip install --upgrade pipenv wheel
     - id: cache-pipenv
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.local/share/virtualenvs
-        key: ${{ runner.os }}-pipenv-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/src/Pipfile.lock') }}
+        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/src/Pipfile.lock') }}
 
     - name: Install dependencies
       if: steps.cache-pipenv.outputs.cache-hit != 'true'
