@@ -47,3 +47,24 @@ isort .
 ```bash
 autoflake --in-place --recursive --remove-unused-variables .
 ```
+
+## Using the CLI
+
+Several commands have been created to do things like create users.
+
+From the docker container terminal inside /app.
+
+```bash
+# to view available commands
+python cli.py --help
+```
+
+Create a user
+
+```bash
+# to view required arguments for create-user
+python cli.py create-user --help
+
+# to create the user
+python cli.py create-user admin@example.com Admin User password
+```
