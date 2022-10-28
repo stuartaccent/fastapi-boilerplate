@@ -1,5 +1,5 @@
-import asyncio
 import contextlib
+from asyncio import run as aiorun
 
 import typer
 from accentdatabase.engine import engine
@@ -56,7 +56,7 @@ def create_user(
     password: str,
 ):
     coro = add_user(email, first_name, last_name, password, False)
-    user = loop.run_until_complete(coro)
+    user = aiorun(coro)
     print(f"Created: {user.email}")
 
 
@@ -68,17 +68,15 @@ def create_super_user(
     password: str,
 ):
     coro = add_user(email, first_name, last_name, password, True)
-    user = loop.run_until_complete(coro)
+    user = aiorun(coro)
     print(f"Created: {user.email}")
 
 
 @app.command()
 def remove_access_tokens():
-    loop.run_until_complete(remove_tokens())
+    aiorun(remove_tokens())
     print("Completed")
 
 
 if __name__ == "__main__":
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     app()
