@@ -116,10 +116,7 @@ async def create_user(db_session: AsyncSession):
                     password="password",
                 )
             )
-            user.is_verified = True
-            db_session.add(user)
-            await db_session.commit()
-            return user
+            return await user_db.update(user, {"is_verified": True})
 
 
 @pytest_asyncio.fixture(name="login_token")

@@ -34,11 +34,9 @@ async def add_user(
                         password=password,
                     )
                 )
-                user.is_superuser = is_superuser
-                user.is_verified = True
-                db_session.add(user)
-                await db_session.commit()
-                return user
+                return await user_db.update(
+                    user, {"is_superuser": is_superuser, "is_verified": True}
+                )
 
 
 async def remove_tokens():
