@@ -72,7 +72,8 @@ def create_super_user(
 
 @app.command()
 def remove_access_tokens():
-    aiorun(remove_tokens())
+    coro = remove_tokens()
+    aiorun(coro)
     print("Completed")
 
 
