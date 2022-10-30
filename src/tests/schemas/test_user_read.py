@@ -2,9 +2,8 @@ import pytest
 
 from app.api.schemas import UserRead
 
-pytestmark = pytest.mark.asyncio
 
-
+@pytest.mark.asyncio
 async def test_from_orm(user):
     model = UserRead.from_orm(user)
 

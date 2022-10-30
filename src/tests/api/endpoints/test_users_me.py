@@ -4,9 +4,8 @@ import pytest
 
 from app.api.schemas import UserRead
 
-pytestmark = pytest.mark.asyncio
 
-
+@pytest.mark.asyncio
 async def test_get(client, user, login_token):
     headers = {"Authorization": f"bearer {login_token}"}
     response = await client.get("/users/me", headers=headers)
