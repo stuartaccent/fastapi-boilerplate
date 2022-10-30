@@ -18,6 +18,7 @@ async def add_user(
     first_name: str,
     last_name: str,
     password: str,
+    is_verified: bool,
     is_superuser: bool,
 ):
     get_session_ctx = contextlib.asynccontextmanager(get_session)
@@ -35,7 +36,11 @@ async def add_user(
                     )
                 )
                 return await user_db.update(
-                    user, {"is_superuser": is_superuser, "is_verified": True}
+                    user,
+                    {
+                        "is_superuser": is_superuser,
+                        "is_verified": is_verified,
+                    },
                 )
 
 
@@ -52,20 +57,17 @@ def create_user(
     first_name: str,
     last_name: str,
     password: str,
+    verified: bool = False,
+    superuser: bool = False,
 ):
-    coro = add_user(email, first_name, last_name, password, False)
-    user = aiorun(coro)
-    print(f"Created: {user.email}")
-
-
-@app.command()
-def create_super_user(
-    email: str,
-    first_name: str,
-    last_name: str,
-    password: str,
-):
-    coro = add_user(email, first_name, last_name, password, True)
+    coro = add_user(
+        email,
+        first_name,
+        last_name,
+        password,
+        verified,
+        superuser,
+    )
     user = aiorun(coro)
     print(f"Created: {user.email}")
 
