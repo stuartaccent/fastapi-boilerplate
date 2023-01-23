@@ -1,16 +1,22 @@
 import uuid
-from typing import Optional
+from typing import Any, Optional
 
 from accentdatabase.session import get_session
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport
 from fastapi_users.authentication.strategy import AccessTokenDatabase, DatabaseStrategy
+from fastapi_users.authentication.transport.bearer import (
+    BearerResponse as FBearerResponse,
+)
+from fastapi_users.openapi import OpenAPIResponseType
 from fastapi_users.password import PasswordHelper
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from fastapi_users_db_sqlalchemy.access_token import SQLAlchemyAccessTokenDatabase
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
+from starlette.responses import Response
 
 from app.config import settings
 from app.database.tables import AccessToken, User
@@ -65,8 +71,8 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         )
 
 
-context = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto")
-password_helper = PasswordHelper(context)
+password_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto")
+password_helper = PasswordHelper(password_context)
 
 
 async def get_user_db(session: AsyncSession = Depends(get_session)):
@@ -81,7 +87,37 @@ async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db
     yield UserManager(user_db, password_helper)
 
 
-bearer_transport = BearerTransport(tokenUrl="auth/token/login")
+class BearerResponse(FBearerResponse):
+    expiry: int
+
+
+class Transport(BearerTransport):
+    async def get_login_response(self, token: str, response: Response) -> Any:
+        return BearerResponse(
+            access_token=token,
+            token_type="bearer",
+            expiry=settings.access_token_expire_seconds,
+        )
+
+    @staticmethod
+    def get_openapi_login_responses_success() -> OpenAPIResponseType:
+        return {
+            status.HTTP_200_OK: {
+                "model": BearerResponse,
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "access_token": "some-token",
+                            "token_type": "bearer",
+                            "expiry": 3600,
+                        }
+                    }
+                },
+            },
+        }
+
+
+bearer_transport = Transport(tokenUrl="auth/token/login")
 
 
 def get_database_strategy(
