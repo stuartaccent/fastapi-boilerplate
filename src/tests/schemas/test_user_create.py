@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.api.schemas import UserCreate
+from app.api.schemas.user import UserCreate
 
 
 def test_is_valid():

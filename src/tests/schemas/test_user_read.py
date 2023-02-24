@@ -1,6 +1,6 @@
 import pytest
 
-from app.api.schemas import UserRead
+from app.api.schemas.user import UserRead
 
 
 @pytest.mark.asyncio

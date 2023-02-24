@@ -6,7 +6,7 @@ from accentdatabase.engine import engine
 from accentdatabase.session import get_session
 from sqlalchemy import text
 
-from app.api.schemas import UserCreate
+from app.api.schemas.user import UserCreate
 from app.database.tables import AccessToken
 from app.users import get_user_db, get_user_manager
 

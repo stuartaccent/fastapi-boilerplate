@@ -1,22 +1,16 @@
 from accentdatabase.base import Base
+from accentdatabase.mixins import UUIDMixin
 from fastapi_users_db_sqlalchemy.access_token import SQLAlchemyBaseAccessTokenTable
-from sqlalchemy import Column, ForeignKey, text
+from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column
 
 
-class AccessToken(SQLAlchemyBaseAccessTokenTable, Base):
+class AccessToken(SQLAlchemyBaseAccessTokenTable, UUIDMixin, Base):
     __tablename__ = "accesstokens"
     __mapper_args__ = {"eager_defaults": True}
 
-    id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        index=True,
-        server_default=text("gen_random_uuid()"),
-        nullable=False,
-    )
-    user_id = Column(
+    user_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False,
     )

@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.api.schemas import UserUpdate
+from app.api.schemas.user import UserUpdate
 
 
 def test_is_valid():

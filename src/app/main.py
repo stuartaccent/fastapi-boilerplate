@@ -9,7 +9,7 @@ from app.config import settings
 from app.database import tables  # dont remove
 
 from app.api.routes.root import router as root_router
-from app.api.schemas import UserCreate, UserRead, UserUpdate
+from app.api.schemas.user import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, fastapi_users
 
 if settings.sentry_dsn:

@@ -1,30 +1,23 @@
+from datetime import datetime
+
 from accentdatabase.base import Base
+from accentdatabase.mixins import UUIDMixin
 from fastapi_users.db import SQLAlchemyBaseUserTable
-from sqlalchemy import Column, DateTime, String, text
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import DateTime, String, text
+from sqlalchemy.orm import Mapped, mapped_column
 
 
-class User(SQLAlchemyBaseUserTable, Base):
+class User(SQLAlchemyBaseUserTable, UUIDMixin, Base):
     __tablename__ = "users"
     __mapper_args__ = {"eager_defaults": True}
 
-    id = Column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        index=True,
-        server_default=text("gen_random_uuid()"),
-        nullable=False,
-    )
-    first_name = Column(
+    first_name: Mapped[str] = mapped_column(
         String(120),
-        nullable=False,
     )
-    last_name = Column(
+    last_name: Mapped[str] = mapped_column(
         String(120),
-        nullable=False,
     )
-    created_at = Column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime,
         server_default=text("clock_timestamp()"),
-        nullable=False,
     )

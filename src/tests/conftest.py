@@ -21,7 +21,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.database import tables
 
-from app.api.schemas import UserCreate
+from app.api.schemas.user import UserCreate
 from app.main import app
 from app.users import (
     get_user_manager,
