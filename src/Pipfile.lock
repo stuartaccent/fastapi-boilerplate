@@ -18,11 +18,11 @@
     "default": {
         "accentdatabase": {
             "hashes": [
-                "sha256:3f4feac68474e1806e631704c305e9bd413f5c29742fc88290b651e953961d87",
-                "sha256:e241ee15742eed6c47d0fe05db008551a2c232c58c3570f1e85a6e9f39606b1e"
+                "sha256:63b8e85e3c69f0e5ed845cb9eb098a5fa113c4b77e66f779661f74f348756a67",
+                "sha256:b867515a4e9216d1349d10f5d65a2104a6d1816fd203884a97240c4a8341025b"
             ],
             "index": "pypi",
-            "version": "==0.0.4"
+            "version": "==0.0.5"
         },
         "accentnotifications": {
             "extras": [

@@ -1,3 +1,5 @@
+import uuid
+
 from accentdatabase.base import Base
 from accentdatabase.mixins import UUIDMixin
 from fastapi_users_db_sqlalchemy.access_token import SQLAlchemyBaseAccessTokenTable
@@ -10,7 +12,7 @@ class AccessToken(SQLAlchemyBaseAccessTokenTable, UUIDMixin, Base):
     __tablename__ = "accesstokens"
     __mapper_args__ = {"eager_defaults": True}
 
-    user_id: Mapped[UUID] = mapped_column(
+    user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
     )
