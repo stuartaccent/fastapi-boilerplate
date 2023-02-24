@@ -3,7 +3,7 @@ from datetime import datetime
 from accentdatabase.base import Base
 from accentdatabase.mixins import UUIDMixin
 from fastapi_users.db import SQLAlchemyBaseUserTable
-from sqlalchemy import DateTime, String, text
+from sqlalchemy import String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 
@@ -18,6 +18,5 @@ class User(SQLAlchemyBaseUserTable, UUIDMixin, Base):
         String(120),
     )
     created_at: Mapped[datetime] = mapped_column(
-        DateTime,
         server_default=text("clock_timestamp()"),
     )
