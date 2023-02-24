@@ -1,5 +1,5 @@
 ARG         PIPENV_INSTALL_OPTIONS=--deploy
-FROM        accent/python-uvicorn-gunicorn:3.10-slim
+FROM        accent/python-uvicorn-gunicorn:3.11-slim
 
 ENV         PYTHONDONTWRITEBYTECODE 1
 ENV         PYTHONFAULTHANDLER 1
