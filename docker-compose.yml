@@ -19,11 +19,9 @@ services:
       - postgres:/var/lib/postgresql/data
 
   mail:
-    image: accent/mailhog
-    expose:
-      - "1025"
+    image: maildev/maildev
     ports:
-      - "8025:8025"
+      - "1080:1080"
 
   app:
     build:
