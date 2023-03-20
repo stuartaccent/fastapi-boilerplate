@@ -18,13 +18,12 @@ pytest-mock = "*"
 python_version = "3.11"
 
 [packages]
-accentdatabase = "*"
+accentdatabase = {git = "https://github.com/accentdesign/accentdatabase.git", ref = "master"}
 accentnotifications = {extras = ["smtp"], version = "*"}
 alembic = "*"
 argon2-cffi = "*"
 asyncpg = "*"
 fastapi = {extras = ["all"], version = "*"}
-fastapi-users = {extras = ["sqlalchemy"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
 python-jose = {extras = ["cryptography"], version = "*"}
 sentry-sdk = {extras = ["fastapi"], version = "*"}

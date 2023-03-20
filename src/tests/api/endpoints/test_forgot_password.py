@@ -3,8 +3,11 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_sends_an_email(client, user, mocker):
-    mocker.patch("fastapi_users.manager.generate_jwt", return_value="abc123")
-    mock = mocker.patch("app.users.generate_email")
+    mocker.patch(
+        "app.authentication.routes.auth.create_jwt",
+        return_value="abc123",
+    )
+    mock = mocker.patch("app.authentication.routes.auth.generate_email")
     response = await client.post(
         "/auth/forgot-password",
         json={"email": user.email},

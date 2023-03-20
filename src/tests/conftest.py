@@ -6,7 +6,6 @@ from os import environ
 if environ.get("TEST_DATABASE_URL"):
     environ["DATABASE_URL"] = environ["TEST_DATABASE_URL"]
 
-
 import pytest
 import pytest_asyncio
 from accentdatabase.config import config
@@ -19,16 +18,11 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
+from app.authentication.dependencies import get_user_service
+from app.authentication.password import hash_password
 from app.database import tables
-
-from app.api.schemas.user import UserCreate
+from app.database.tables import User
 from app.main import app
-from app.users import (
-    get_user_manager,
-    get_user_db,
-    get_token_db,
-    get_database_strategy,
-)
 
 
 def run_alembic_upgrade(connection, cfg):
@@ -103,25 +97,20 @@ async def client_fixture(db_session: AsyncSession):
 
 @pytest_asyncio.fixture(name="user")
 async def create_user(db_session: AsyncSession):
-    get_user_db_context = contextlib.asynccontextmanager(get_user_db)
-    get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
-
-    async with get_user_db_context(db_session) as user_db:
-        async with get_user_manager_context(user_db) as user_manager:
-            user = await user_manager.create(
-                UserCreate(
-                    first_name="Some",
-                    last_name="One",
-                    email="someone@example.com",
-                    password="password",
-                )
-            )
-            return await user_db.update(user, {"is_verified": True})
+    user = User(
+        first_name="Some",
+        last_name="One",
+        email="someone@example.com",
+        hashed_password=hash_password("password"),
+        is_verified=True,
+    )
+    db_session.add(user)
+    await db_session.commit()
+    return user
 
 
 @pytest_asyncio.fixture(name="login_token")
-async def get_login_token(db_session: AsyncSession, user: tables.User):
-    get_token_db_context = contextlib.asynccontextmanager(get_token_db)
-    async with get_token_db_context(db_session) as token_db:
-        database_strategy = get_database_strategy(token_db)
-        return await database_strategy.write_token(user)
+async def get_login_token(user: User, db_session: AsyncSession):
+    get_user_service_ctx = contextlib.asynccontextmanager(get_user_service)
+    async with get_user_service_ctx(db_session) as user_service:
+        return await user_service.create_token(user, 10)

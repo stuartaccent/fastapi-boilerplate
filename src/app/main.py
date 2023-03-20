@@ -9,8 +9,8 @@ from app.config import settings
 from app.database import tables  # dont remove
 
 from app.api.routes.root import router as root_router
-from app.api.schemas.user import UserCreate, UserRead, UserUpdate
-from app.users import auth_backend, fastapi_users
+from app.authentication.routes.auth import router as auth_router
+from app.authentication.routes.user import router as user_router
 
 if settings.sentry_dsn:
     import sentry_sdk
@@ -54,27 +54,12 @@ app = FastAPI(
 
 app.include_router(root_router)
 app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/token",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
+    auth_router,
     prefix="/auth",
     tags=["auth"],
 )
 app.include_router(
-    fastapi_users.get_reset_password_router(),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_verify_router(UserRead),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
+    user_router,
     prefix="/users",
     tags=["users"],
 )

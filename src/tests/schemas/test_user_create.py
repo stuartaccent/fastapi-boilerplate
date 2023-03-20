@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.api.schemas.user import UserCreate
+from app.authentication.schemas import UserCreate
 
 
 def test_is_valid():
@@ -14,9 +14,9 @@ def test_is_valid():
 
     assert model.dict() == {
         "email": "me@example.com",
-        "password": "password",
         "first_name": "some",
         "last_name": "one",
+        "password": "password",
     }
 
 
@@ -31,17 +31,17 @@ def test_required_values():
             "type": "value_error.missing",
         },
         {
-            "loc": ("password",),
-            "msg": "field required",
-            "type": "value_error.missing",
-        },
-        {
             "loc": ("first_name",),
             "msg": "field required",
             "type": "value_error.missing",
         },
         {
             "loc": ("last_name",),
+            "msg": "field required",
+            "type": "value_error.missing",
+        },
+        {
+            "loc": ("password",),
             "msg": "field required",
             "type": "value_error.missing",
         },

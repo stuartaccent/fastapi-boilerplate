@@ -7,10 +7,13 @@ async def test_sends_an_email(client, user, db_session, mocker):
     db_session.add(user)
     await db_session.commit()
 
-    mocker.patch("fastapi_users.manager.generate_jwt", return_value="abc123")
-    mock = mocker.patch("app.users.generate_email")
+    mocker.patch(
+        "app.authentication.routes.auth.create_jwt",
+        return_value="abc123",
+    )
+    mock = mocker.patch("app.authentication.routes.auth.generate_email")
     response = await client.post(
-        "/auth/request-verify-token",
+        "/auth/verify-request",
         json={"email": user.email},
     )
     assert response.status_code == 202

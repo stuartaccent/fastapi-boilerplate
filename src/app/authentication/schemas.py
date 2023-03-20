@@ -1,18 +1,31 @@
 from typing import Optional
 from uuid import UUID
 
-from fastapi_users import schemas as users_schemas
-from pydantic import EmailStr, constr
+from pydantic import BaseModel, EmailStr, constr
 
 
-class UserCreate(users_schemas.CreateUpdateDictModel):
+class BearerResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class ForgotPassword(BaseModel):
     email: EmailStr
+
+
+class ResetPassword(BaseModel):
+    token: str
     password: constr(min_length=6, max_length=120)
+
+
+class UserCreate(BaseModel):
+    email: EmailStr
     first_name: constr(min_length=1, max_length=120)
     last_name: constr(min_length=1, max_length=120)
+    password: constr(min_length=6, max_length=120)
 
 
-class UserRead(users_schemas.CreateUpdateDictModel):
+class UserRead(BaseModel):
     id: UUID
     email: EmailStr
     first_name: constr(min_length=1, max_length=120)
@@ -25,8 +38,22 @@ class UserRead(users_schemas.CreateUpdateDictModel):
         orm_mode = True
 
 
-class UserUpdate(users_schemas.CreateUpdateDictModel):
+class UserUpdate(BaseModel):
     email: Optional[EmailStr]
     password: Optional[constr(min_length=6, max_length=120)]
     first_name: Optional[constr(min_length=1, max_length=120)]
     last_name: Optional[constr(min_length=1, max_length=120)]
+
+
+class UserUpdateFull(UserUpdate):
+    is_active: Optional[bool]
+    is_superuser: Optional[bool]
+    is_verified: Optional[bool]
+
+
+class VerifyToken(BaseModel):
+    token: str
+
+
+class VerifyRequest(BaseModel):
+    email: EmailStr
