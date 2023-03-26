@@ -30,31 +30,31 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Set up Python 3.10.x
+    - name: Set up Python 3.11.x
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10.x
+        python-version: 3.11.x
 
-    - name: Install pipenv
+    - name: Install poetry
       run: |
-        python -m pip install --upgrade pipenv wheel
-    - id: cache-pipenv
+        python -m pip install --upgrade poetry wheel
+    - id: cache-poetry
       uses: actions/cache@v3
       with:
         path: ~/.local/share/virtualenvs
-        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/src/Pipfile.lock') }}
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/src/poetry.lock') }}
 
     - name: Install dependencies
-      if: steps.cache-pipenv.outputs.cache-hit != 'true'
+      if: steps.cache-poetry.outputs.cache-hit != 'true'
       run: |
         cd src;
-        pipenv install --deploy --dev;
+        poetry config virtualenvs.create false && poetry install;
     - name: Run Linting
       run: |
         cd src;
-        pipenv run isort --check --diff . ;
-        pipenv run black --check --diff . ;
-        pipenv run flake8 . ;
+        isort --check --diff . ;
+        black --check --diff . ;
+        flake8 . ;
     - name: Run Tests
       env:
         DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/appdb
@@ -65,4 +65,4 @@ jobs:
         SECRET_KEY: 358cb7a6f3a39320d0f9014c7e5406992acfdfdec22c1eca0f7ca7fa8c747928
       run: |
         cd src;
-        pipenv run pytest --asyncio-mode=auto;
+        pytest --asyncio-mode=auto;

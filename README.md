@@ -4,24 +4,24 @@
 
 From the docker container terminal inside /app.
 
-View available updates:
-```bash
-pipenv update --outdated
-```
-
 Install a package:
 ```bash
-pipenv install <package>
+poetry add <package>
 ```
 
 Install a dev package:
 ```bash
-pipenv install --dev <package>
+poetry add --dev <package>
 ```
 
-Update a package:
+Update all package:
 ```bash
-pipenv update <package>
+poetry update
+```
+
+Update one or more package:
+```bash
+poetry update <package>
 ```
 
 ## Running tests

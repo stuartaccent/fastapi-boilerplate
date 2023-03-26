@@ -27,7 +27,7 @@ services:
     build:
       context: .
       args:
-        PIPENV_INSTALL_OPTIONS: --dev
+        ENVIRONMENT: dev
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb
       TEST_DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb_test
