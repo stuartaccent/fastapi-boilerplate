@@ -12,4 +12,4 @@ COPY        src /app
 WORKDIR     /app
 
 RUN         poetry config virtualenvs.create false \
-            && poetry install $(test "$ENVIRONMENT" == production && echo "--no-dev") --no-interaction --no-ansi
+            && poetry install $(test "$ENVIRONMENT" = production && echo "--only main") --no-interaction --no-ansi
