@@ -6,10 +6,12 @@ ENV         ENVIRONMENT=${ENVIRONMENT}
 ENV         PYTHONDONTWRITEBYTECODE=1
 ENV         PYTHONFAULTHANDLER=1
 
-RUN         pip install --upgrade pip poetry wheel
+COPY        ./src/pyproject.toml ./src/poetry.lock /
 
-COPY        src /app
+RUN         pip install --upgrade pip poetry wheel \
+            && poetry config virtualenvs.create false \
+            && poetry install $(test "$ENVIRONMENT" = production && echo "--only main") --no-interaction --no-ansi \
+            && rm -rf /root/.cache/pypoetry
+
 WORKDIR     /app
-
-RUN         poetry config virtualenvs.create false \
-            && poetry install $(test "$ENVIRONMENT" = production && echo "--only main") --no-interaction --no-ansi
+COPY        src .
