@@ -9,16 +9,15 @@ if environ.get("TEST_DATABASE_URL"):
 
 import pytest
 import pytest_asyncio
-from accentdatabase.config import config
-from accentdatabase.engine import engine
-from accentdatabase.session import get_session
 from accentdatabase.testing import recreate_postgres_database
 from alembic import command
 from alembic.config import Config
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.config import settings
+from app.database.engine import engine
+from app.database.session import get_session
 from app.database import tables
 
 from app.api.schemas.user import UserCreate
@@ -47,7 +46,7 @@ def event_loop(request):
 
 @pytest_asyncio.fixture(name="db_setup", scope="session", autouse=True)
 async def db_setup_fixture():
-    await recreate_postgres_database(config.url)
+    await recreate_postgres_database(settings.database_url)
 
 
 @pytest_asyncio.fixture(name="db_migrations", scope="session", autouse=True)
@@ -68,10 +67,9 @@ async def db_session_fixture():
     # begin a new database transaction
     trans = await connection.begin()
     # create a sessionmaker
-    async_session = sessionmaker(
+    async_session = async_sessionmaker(
         engine,
         expire_on_commit=False,
-        class_=AsyncSession,
     )
     # create a new session and bind it to the connection
     # this will ensure that when the transaction is rolled back

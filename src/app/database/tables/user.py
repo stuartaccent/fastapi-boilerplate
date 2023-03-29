@@ -1,10 +1,11 @@
 from datetime import datetime
 
-from accentdatabase.base import Base
 from accentdatabase.mixins import UUIDMixin
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy import String, text
 from sqlalchemy.orm import Mapped, mapped_column
+
+from .base import Base
 
 
 class User(SQLAlchemyBaseUserTable, UUIDMixin, Base):

@@ -1,7 +1,6 @@
 import uuid
 from typing import Any, Optional
 
-from accentdatabase.session import get_session
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport
@@ -19,6 +18,7 @@ from starlette import status
 from starlette.responses import Response
 
 from app.config import settings
+from app.database.session import get_session
 from app.database.tables import AccessToken, User
 from app.notifications.email import generate_email
 
