@@ -6,7 +6,7 @@ WORKDIR     /app
 
 COPY        ./src/pyproject.toml ./src/poetry.lock ./
 
-RUN         pip install --upgrade pip poetry wheel \
+RUN         pip install poetry \
             && poetry config virtualenvs.create false \
             && poetry install $(test "$ENVIRONMENT" = production && echo "--only main") --no-interaction --no-ansi \
             && rm -rf /root/.cache/pypoetry
