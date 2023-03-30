@@ -13,12 +13,16 @@ async_session = async_sessionmaker(
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """
     returns an async session object.
-    - example FastAPI usage::
+
+    Example FastAPI usage:
+
         from app.database.session import get_session
         from fastapi import Depends, FastApi
         from sqlalchemy import select
         from sqlalchemy.ext.asyncio import AsyncSession
+
         app = FastAPI()
+
         @app.get("/items")
         async def items(session: AsyncSession = Depends(get_session)):
             qs = select(Item)
