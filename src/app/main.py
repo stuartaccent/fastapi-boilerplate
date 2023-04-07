@@ -1,4 +1,5 @@
 # isort: off
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,10 +8,9 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import settings
 from app.database import tables  # dont remove
-
 from app.api.routes.root import router as root_router
-from app.api.schemas.user import UserCreate, UserRead, UserUpdate
-from app.users import auth_backend, fastapi_users
+from app.auth.routes import auth_router, user_router
+from app.grpc import grpc_clients, AuthGrpcClient
 
 if settings.sentry_dsn:
     import sentry_sdk
@@ -30,6 +30,14 @@ else:
     print("Sentry not enabled as no SENTRY_DSN environment variable")
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with AuthGrpcClient(settings.auth_host, settings.auth_port) as client:
+        grpc_clients["auth"] = client
+        yield
+    grpc_clients.clear()
+
+
 middleware = [
     Middleware(
         TrustedHostMiddleware,
@@ -47,34 +55,9 @@ middleware = [
 app = FastAPI(
     title="myapi",
     middleware=middleware,
-    docs_url="/docs",
-    openapi_url="/openapi.json",
-    redoc_url="/redocs",
+    lifespan=lifespan,
 )
 
 app.include_router(root_router)
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/token",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_reset_password_router(),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_verify_router(UserRead),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
-    prefix="/users",
-    tags=["users"],
-)
+app.include_router(auth_router)
+app.include_router(user_router)

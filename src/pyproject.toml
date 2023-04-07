@@ -11,11 +11,10 @@ accentnotifications = {extras = ["smtp"], version = "^0.0.2"}
 alembic = "^1.10.2"
 asyncpg = "^0.27.0"
 fastapi = {extras = ["all"], version = "^0.95.0"}
-fastapi-users = {extras = ["sqlalchemy"], version = "^10.4.1"}
-passlib = {extras = ["argon2", "bcrypt"], version = "^1.7.4"}
-python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 sentry-sdk = {extras = ["fastapi"], version = "^1.17.0"}
 typer = {extras = ["all"], version = "^0.7.0"}
+grpcio = "^1.53.0"
+protobuf = "^4.22.1"
 
 [tool.poetry.group.dev.dependencies]
 autoflake = "^2.0.2"
@@ -32,7 +31,10 @@ pytest-mock = "^3.10.0"
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = "app.database.migrations.*"
+module = [
+  "app.database.migrations.*",
+  "protos.*"
+]
 ignore_errors = true
 
 [tool.black]
@@ -40,13 +42,15 @@ line-length = 88
 exclude = '''
   /(
     migrations
+    | protos
   )/
 '''
 
 [tool.isort]
 profile = "black"
 extend_skip = [
-  'migrations'
+  'migrations',
+  'protos'
 ]
 
 [build-system]

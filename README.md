@@ -58,13 +58,3 @@ From the docker container terminal inside /app.
 # to view available commands
 python cli.py --help
 ```
-
-Create a user
-
-```bash
-# to view required arguments for create-user
-python cli.py create-user --help
-
-# to create the user
-python cli.py create-user admin@example.com Admin User password
-```

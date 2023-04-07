@@ -62,7 +62,6 @@ jobs:
         NOTIFICATIONS_SMTP_HOST: mail
         NOTIFICATIONS_SMTP_PORT: 1025
         PYTHONUNBUFFERED: 1
-        SECRET_KEY: 358cb7a6f3a39320d0f9014c7e5406992acfdfdec22c1eca0f7ca7fa8c747928
       run: |
         cd src;
         pytest --asyncio-mode=auto;
