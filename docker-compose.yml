@@ -23,6 +23,14 @@ services:
     ports:
       - "1080:1080"
 
+  auth:
+    image: accent/grpc-service-auth:latest
+    environment:
+      DB_DNS: postgresql://postgres:password@db:5432/appdb
+    depends_on:
+      db:
+        condition: service_healthy
+
   app:
     build:
       context: .
@@ -34,7 +42,6 @@ services:
       EMAIL_FROM_ADDRESS: no-reply@example.com
       NOTIFICATIONS_SMTP_HOST: mail
       NOTIFICATIONS_SMTP_PORT: 1025
-      SECRET_KEY: 358cb7a6f3a39320d0f9014c7e5406992acfdfdec22c1eca0f7ca7fa8c747928
     depends_on:
       db:
         condition: service_healthy

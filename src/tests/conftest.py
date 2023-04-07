@@ -1,11 +1,12 @@
 # isort: off
 import asyncio
-import contextlib
+import uuid
 from os import environ
+
+from app.auth.schemas import UserRead, UserType
 
 if environ.get("TEST_DATABASE_URL"):
     environ["DATABASE_URL"] = environ["TEST_DATABASE_URL"]
-
 
 import pytest
 import pytest_asyncio
@@ -19,15 +20,7 @@ from app.config import settings
 from app.database.engine import engine
 from app.database.session import get_session
 from app.database import tables
-
-from app.api.schemas.user import UserCreate
 from app.main import app
-from app.users import (
-    get_user_manager,
-    get_user_db,
-    get_token_db,
-    get_database_strategy,
-)
 
 
 def run_alembic_upgrade(connection, cfg):
@@ -99,27 +92,15 @@ async def client_fixture(db_session: AsyncSession):
     app.dependency_overrides.clear()
 
 
-@pytest_asyncio.fixture(name="user")
-async def create_user(db_session: AsyncSession):
-    get_user_db_context = contextlib.asynccontextmanager(get_user_db)
-    get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
-
-    async with get_user_db_context(db_session) as user_db:
-        async with get_user_manager_context(user_db) as user_manager:
-            user = await user_manager.create(
-                UserCreate(
-                    first_name="Some",
-                    last_name="One",
-                    email="someone@example.com",
-                    password="password",
-                )
-            )
-            return await user_db.update(user, {"is_verified": True})
-
-
-@pytest_asyncio.fixture(name="login_token")
-async def get_login_token(db_session: AsyncSession, user: tables.User):
-    get_token_db_context = contextlib.asynccontextmanager(get_token_db)
-    async with get_token_db_context(db_session) as token_db:
-        database_strategy = get_database_strategy(token_db)
-        return await database_strategy.write_token(user)
+@pytest_asyncio.fixture
+async def mock_current_user():
+    """mock the current user"""
+    return UserRead(
+        id=uuid.uuid4(),
+        email="test@example.com",
+        first_name="Test",
+        last_name="User",
+        user_type=UserType(name="user", scopes=["read", "write"]),
+        is_active=True,
+        is_verified=False,
+    )
