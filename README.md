@@ -41,11 +41,7 @@ black .
 ```
 
 ```bash
-isort .
-```
-
-```bash
-autoflake --in-place --recursive --remove-unused-variables .
+ruff --fix .
 ```
 
 ## Using the CLI

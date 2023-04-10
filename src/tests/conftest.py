@@ -1,10 +1,10 @@
 # isort: off
 import asyncio
+import os
 import uuid
-from os import environ
 
-if environ.get("TEST_DATABASE_URL"):
-    environ["DATABASE_URL"] = environ["TEST_DATABASE_URL"]
+if os.environ.get("TEST_DATABASE_URL"):
+    os.environ["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
 
 import pytest
 import pytest_asyncio
@@ -18,9 +18,9 @@ from app.auth.dependencies import current_user
 from app.auth.exceptions import Unauthorized
 from app.auth.schemas import UserRead, UserType
 from app.config import settings
+from app.database import tables  # noqa: F401
 from app.database.engine import engine
 from app.database.session import async_session, get_session
-from app.database import tables
 from app.main import app
 
 

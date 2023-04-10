@@ -1,4 +1,3 @@
-# isort: off
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -6,16 +5,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from app.config import settings
-from app.database import tables  # dont remove
 from app.api.routes.root import router as root_router
 from app.auth.routes import auth_router, user_router
-from app.grpc import grpc_clients, AuthGrpcClient
+from app.config import settings
+from app.database import tables  # noqa: F401
+from app.grpc import AuthGrpcClient, grpc_clients
 
 if settings.sentry_dsn:
     import sentry_sdk
-    from sentry_sdk.integrations.starlette import StarletteIntegration
     from sentry_sdk.integrations.fastapi import FastApiIntegration
+    from sentry_sdk.integrations.starlette import StarletteIntegration
 
     sentry_sdk.init(
         dsn=settings.sentry_dsn,

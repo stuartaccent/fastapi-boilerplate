@@ -52,9 +52,8 @@ jobs:
     - name: Run Linting
       run: |
         cd src;
-        isort --check --diff . ;
         black --check --diff . ;
-        flake8 . ;
+        ruff --diff . ;
     - name: Run Tests
       env:
         DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/appdb
