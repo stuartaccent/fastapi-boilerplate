@@ -1,7 +1,6 @@
 # isort: off
 import asyncio
 import os
-import uuid
 
 if os.environ.get("TEST_DATABASE_URL"):
     os.environ["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
@@ -22,6 +21,7 @@ from app.database import tables  # noqa: F401
 from app.database.engine import engine
 from app.database.session import async_session, get_session
 from app.main import app
+from tests import fixtures
 
 
 def run_alembic_upgrade(connection, cfg):
@@ -45,6 +45,9 @@ async def db_setup_fixture():
 async def db_migrations_fixture(db_setup):
     async with engine.begin() as conn:
         await conn.run_sync(run_alembic_upgrade, Config("alembic.ini"))
+        # load fixtures
+        await conn.execute(fixtures.user_type_sql, fixtures.user_type)
+        await conn.execute(fixtures.user_sql, fixtures.user)
     await engine.dispose()
 
 
@@ -62,15 +65,8 @@ async def db_session_fixture():
 @pytest.fixture
 def client_authenticated(db_session: AsyncSession) -> TestClient:
     def mock_user():
-        return UserRead(
-            id=uuid.UUID("e1a88ef8-b341-4653-9e6b-9d943fdf32bc"),
-            email="test@example.com",
-            first_name="Test",
-            last_name="User",
-            user_type=UserType(name="user", scopes=["read", "write"]),
-            is_active=True,
-            is_verified=False,
-        )
+        user_type = UserType(**fixtures.user_type, scopes=["admin"])
+        return UserRead(**fixtures.user, user_type=user_type)
 
     app.dependency_overrides[get_session] = lambda: db_session
     app.dependency_overrides[current_user] = mock_user
