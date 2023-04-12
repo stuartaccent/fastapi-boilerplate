@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     allowed_hosts: List[str] = ["*"]
     auth_host: str = "auth"
     auth_port: int = 50051
+    email_host: str = "email"
+    email_port: int = 50051
     database_url: PostgresDsn
     email_from_address: str
     sentry_dsn: Optional[HttpUrl] = None

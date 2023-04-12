@@ -58,8 +58,6 @@ jobs:
       env:
         DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/appdb
         EMAIL_FROM_ADDRESS: support@example.com
-        NOTIFICATIONS_SMTP_HOST: mail
-        NOTIFICATIONS_SMTP_PORT: 1025
         PYTHONUNBUFFERED: 1
       run: |
         cd src;

@@ -4,6 +4,7 @@ from typing import TypedDict
 import grpc
 
 from protos.auth_pb2_grpc import AuthenticationStub
+from protos.email_pb2_grpc import EmailServiceStub
 
 
 class GrpcClientBase:
@@ -66,8 +67,17 @@ class AuthGrpcClient(GrpcClientBase, AuthenticationStub):
         AuthenticationStub.__init__(self, self._channel)
 
 
+class EmailGrpcClient(GrpcClientBase, EmailServiceStub):
+    def __init__(
+        self, host: str, port: int, max_retries: int = 3, retry_interval: int = 1
+    ):
+        GrpcClientBase.__init__(self, host, port, max_retries, retry_interval)
+        EmailServiceStub.__init__(self, self._channel)
+
+
 class GrpcClients(TypedDict, total=False):
     auth: AuthGrpcClient
+    email: EmailGrpcClient
 
 
 grpc_clients: GrpcClients = {}

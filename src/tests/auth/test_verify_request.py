@@ -23,7 +23,7 @@ async def _run_verify_request_test(mocker, client, response_callback):
 
 @pytest.mark.asyncio
 async def test_verify_request_mocked_success(mocker, client_unauthenticated):
-    mocked_mail = mocker.patch("app.auth.routes.generate_email")
+    mocked_mail = mocker.patch("app.auth.routes.send_email")
 
     grpc_response = auth_pb2.TokenWithEmail(
         token="verify-token",
@@ -58,7 +58,7 @@ async def test_verify_request_mocked_success(mocker, client_unauthenticated):
 
 @pytest.mark.asyncio
 async def test_verify_request_mocked_error(mocker, client_unauthenticated):
-    mocked_mail = mocker.patch("app.auth.routes.generate_email")
+    mocked_mail = mocker.patch("app.auth.routes.send_email")
 
     async def create_rpc_error(*args, **kwargs):
         raise AioRpcError(

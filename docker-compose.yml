@@ -18,7 +18,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
 
-  mail:
+  maildev:
     image: maildev/maildev
     ports:
       - "1080:1080"
@@ -31,6 +31,16 @@ services:
       db:
         condition: service_healthy
 
+  email:
+    image: accent/grpc-service-email:latest
+    environment:
+      SMTP_HOST: maildev
+      SMTP_PORT: 1025
+      SMTP_STARTTLS: false
+    depends_on:
+      maildev:
+        condition: service_healthy
+
   app:
     build:
       context: .
@@ -40,8 +50,6 @@ services:
       DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb
       TEST_DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb_test
       EMAIL_FROM_ADDRESS: no-reply@example.com
-      NOTIFICATIONS_SMTP_HOST: mail
-      NOTIFICATIONS_SMTP_PORT: 1025
     depends_on:
       db:
         condition: service_healthy

@@ -9,7 +9,7 @@ from app.api.routes.root import router as root_router
 from app.auth.routes import auth_router, user_router
 from app.config import settings
 from app.database import tables  # noqa: F401
-from app.grpc import AuthGrpcClient, grpc_clients
+from app.grpc import AuthGrpcClient, EmailGrpcClient, grpc_clients
 
 if settings.sentry_dsn:
     import sentry_sdk
@@ -31,8 +31,15 @@ else:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with AuthGrpcClient(settings.auth_host, settings.auth_port) as client:
-        grpc_clients["auth"] = client
+    async with AuthGrpcClient(
+        settings.auth_host,
+        settings.auth_port,
+    ) as auth, EmailGrpcClient(
+        settings.email_host,
+        settings.email_port,
+    ) as email:
+        grpc_clients["auth"] = auth
+        grpc_clients["email"] = email
         yield
     grpc_clients.clear()
 

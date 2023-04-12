@@ -7,7 +7,6 @@ authors = ["Stuart <stuart@accentdesign.co.uk>"]
 [tool.poetry.dependencies]
 python = "^3.11"
 accentdatabase = "^0.0.5"
-accentnotifications = {extras = ["smtp"], version = "^0.0.2"}
 alembic = "^1.10.2"
 asyncpg = "^0.27.0"
 fastapi = {extras = ["all"], version = "^0.95.0"}

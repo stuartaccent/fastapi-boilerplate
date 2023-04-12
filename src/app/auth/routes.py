@@ -8,8 +8,8 @@ from starlette.background import BackgroundTasks
 from app.auth import schemas
 from app.auth.dependencies import CurrentActiveUser, CurrentUser, Oauth2Form, Token
 from app.auth.exceptions import BadRequest, IncorrectLoginCredentials
+from app.email.send import send_email
 from app.grpc import grpc_clients
-from app.notifications.email import generate_email
 from protos import auth_pb2
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
@@ -64,7 +64,7 @@ async def verify_request(
         print(response)
 
         async def send_mail(email, token):
-            await generate_email(
+            await send_email(
                 to_address=email,
                 subject="Complete your registration",
                 template_context={
@@ -107,7 +107,7 @@ async def forgot_password(
         print(response)
 
         async def send_mail(email, token):
-            await generate_email(
+            await send_email(
                 to_address=email,
                 subject="Reset your password",
                 template_context={

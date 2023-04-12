@@ -27,7 +27,7 @@ async def _run_forgot_password_test(mocker, client, response_callback):
 
 @pytest.mark.asyncio
 async def test_forgot_password_mocked_success(mocker, client_unauthenticated):
-    mocked_mail = mocker.patch("app.auth.routes.generate_email")
+    mocked_mail = mocker.patch("app.auth.routes.send_email")
 
     grpc_response = auth_pb2.TokenWithEmail(
         token="reset-token",
@@ -62,7 +62,7 @@ async def test_forgot_password_mocked_success(mocker, client_unauthenticated):
 
 @pytest.mark.asyncio
 async def test_forgot_password_mocked_error(mocker, client_unauthenticated):
-    mocked_mail = mocker.patch("app.auth.routes.generate_email")
+    mocked_mail = mocker.patch("app.auth.routes.send_email")
 
     async def create_rpc_error(*args, **kwargs):
         raise AioRpcError(

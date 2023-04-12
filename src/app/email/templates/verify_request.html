@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete your registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f6f6f6;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border: 1px solid #ddd;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .content {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333;
+    }
+    .pre {
+      font-size: 14px;
+      width: auto;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      background-color: #efefef;
+      padding: 10px 15px;
+    }
+    .footer {
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.5);
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Thankyou for registering on {{ site_name }}</div>
+    <div class="content">
+      <p>Hello,</p>
+      <p>You should be prompted on screen for a token, that's the following:</p>
+      <pre class="pre">{{ token }}</pre>
+      <p>Thank you,<br/>{{ site_name }}</p>
+    </div>
+    <div class="footer">If you have any concerns regarding this email please contact us on the {{ site_name }} website.</div>
+  </div>
+</body>
+</html>
