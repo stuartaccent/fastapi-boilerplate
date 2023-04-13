@@ -36,7 +36,6 @@ services:
     environment:
       SMTP_HOST: maildev
       SMTP_PORT: 1025
-      SMTP_STARTTLS: false
     depends_on:
       maildev:
         condition: service_healthy
