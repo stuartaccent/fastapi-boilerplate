@@ -31,16 +31,14 @@ else:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with AuthGrpcClient(
-        settings.auth_host,
-        settings.auth_port,
-    ) as auth, EmailGrpcClient(
-        settings.email_host,
-        settings.email_port,
-    ) as email:
+    auth_client = AuthGrpcClient(settings.auth_host, settings.auth_port)
+    email_client = EmailGrpcClient(settings.email_host, settings.email_port)
+
+    async with auth_client as auth, email_client as email:
         grpc_clients["auth"] = auth
         grpc_clients["email"] = email
         yield
+
     grpc_clients.clear()
 
 

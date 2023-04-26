@@ -13,7 +13,13 @@ class GrpcClientBase:
     on UNAVAILABLE and DEADLINE_EXCEEDED status codes.
     """
 
-    def __init__(self, host: str, port: int, max_retries: int, retry_interval: int):
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        max_retries: int,
+        retry_interval: int,
+    ):
         self._host = host
         self._port = port
         self._max_retries = max_retries
@@ -61,7 +67,11 @@ class GrpcClientBase:
 
 class AuthGrpcClient(GrpcClientBase, AuthenticationStub):
     def __init__(
-        self, host: str, port: int, max_retries: int = 3, retry_interval: int = 1
+        self,
+        host: str,
+        port: int,
+        max_retries: int = 3,
+        retry_interval: int = 1,
     ):
         GrpcClientBase.__init__(self, host, port, max_retries, retry_interval)
         AuthenticationStub.__init__(self, self._channel)
@@ -69,7 +79,11 @@ class AuthGrpcClient(GrpcClientBase, AuthenticationStub):
 
 class EmailGrpcClient(GrpcClientBase, EmailServiceStub):
     def __init__(
-        self, host: str, port: int, max_retries: int = 3, retry_interval: int = 1
+        self,
+        host: str,
+        port: int,
+        max_retries: int = 3,
+        retry_interval: int = 1,
     ):
         GrpcClientBase.__init__(self, host, port, max_retries, retry_interval)
         EmailServiceStub.__init__(self, self._channel)
