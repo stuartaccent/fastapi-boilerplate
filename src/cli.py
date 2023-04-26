@@ -1,6 +1,5 @@
 from asyncio import run as aiorun
 
-import grpc
 import typer
 
 from app.config import settings
@@ -19,29 +18,28 @@ async def _create_user(
 ):
     timeout = 5
     async with AuthGrpcClient(settings.auth_host, settings.auth_port) as client:
-        try:
-            # create the user
-            request = auth_pb2.RegisterRequest(
-                email=email,
-                first_name=first_name,
-                last_name=last_name,
-                password=password,
-            )
-            user = await client.Register(request, timeout=timeout)
-            print(f"user created: {user.email}")
-            # if verified
-            if verified:
-                # request a token
-                request = auth_pb2.VerifyUserTokenRequest(email=user.email)
-                token = await client.VerifyUserToken(request, timeout=timeout)
-                print(f"verification token: {token.token}")
-                # verify
-                request = auth_pb2.Token(token=token.token)
-                verify = await client.VerifyUser(request, timeout=timeout)
-                print(f"user verified: {verify.is_verified}")
+        # create the user
+        request = auth_pb2.RegisterRequest(
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            password=password,
+        )
+        user = await client.Register(request, timeout=timeout)
+        print(f"user created: {user.email}")
 
-        except grpc.aio.AioRpcError as e:
-            raise e
+        if not verified:
+            return
+
+        # request a token
+        request = auth_pb2.VerifyUserTokenRequest(email=user.email)
+        token = await client.VerifyUserToken(request, timeout=timeout)
+        print(f"verification token: {token.token}")
+
+        # verify
+        request = auth_pb2.Token(token=token.token)
+        verify = await client.VerifyUser(request, timeout=timeout)
+        print(f"user verified: {verify.is_verified}")
 
 
 @app.command()
