@@ -58,4 +58,4 @@ async def test_login_mocked_error(mocker, client_unauthenticated):
     response = await _run_login_test(mocker, client_unauthenticated, create_rpc_error)
 
     assert response.status_code == 400
-    assert response.json() == {"detail": "INCORRECT_LOGIN_CREDENTIALS"}
+    assert response.json() == {"detail": "Incorrect login credentials"}

@@ -11,14 +11,14 @@ class BadRequest(HTTPException):
 
 class IncorrectLoginCredentials(BadRequest):
     def __init__(self):
-        super().__init__("INCORRECT_LOGIN_CREDENTIALS")
+        super().__init__("Incorrect login credentials")
 
 
 class Unauthorized(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="INVALID_AUTH_CREDENTIALS",
+            detail="Unauthorized",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -27,5 +27,5 @@ class Forbidden(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="FORBIDDEN",
+            detail="Forbidden",
         )
