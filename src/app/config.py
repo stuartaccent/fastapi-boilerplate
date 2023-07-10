@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from pydantic import BaseSettings, HttpUrl, PostgresDsn
+from pydantic import HttpUrl, PostgresDsn
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):

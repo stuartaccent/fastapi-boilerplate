@@ -39,7 +39,7 @@ async def logout(_: CurrentUser, token: Token) -> None:
 @auth_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(data: schemas.UserCreate) -> schemas.UserRead:
     try:
-        request = auth_pb2.RegisterRequest(**data.dict())
+        request = auth_pb2.RegisterRequest(**data.model_dump())
         response = await grpc_clients["auth"].Register(request, timeout=5)
         return MessageToDict(
             response,
@@ -147,7 +147,7 @@ async def update_current_user(
 ) -> schemas.UserRead:
     try:
         request = auth_pb2.UpdateUserRequest(
-            token=token, **data.dict(exclude_unset=True)
+            token=token, **data.model_dump(exclude_unset=True)
         )
         response = await grpc_clients["auth"].UpdateUser(request, timeout=5)
         return MessageToDict(
