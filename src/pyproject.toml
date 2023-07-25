@@ -6,24 +6,24 @@ authors = ["Stuart <stuart@accentdesign.co.uk>"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-accentdatabase = "^0.0.6"
-alembic = "^1.11.1"
-asyncpg = "^0.27.0"
+accentdatabase = "*"
+alembic = "*"
+asyncpg = "*"
 fastapi = {extras = ["all"], version = "^0.100.0"}
-pydantic-settings = "^2.0.1"
-sentry-sdk = {extras = ["fastapi"], version = "^1.26.0"}
-typer = {extras = ["all"], version = "^0.9.0"}
-grpcio = "^1.56.0"
-protobuf = "^4.23.3"
+pydantic-settings = "*"
+sentry-sdk = {extras = ["fastapi"], version = "*"}
+typer = {extras = ["all"], version = "*"}
+grpcio = "*"
+protobuf = "*"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.3.0"
-httpx = "^0.24.1"
-mypy = "^1.4.1"
-pytest = "^7.4.0"
-pytest-asyncio = "^0.21.0"
-pytest-mock = "^3.11.1"
-ruff = "^0.0.275"
+black = "*"
+httpx = "*"
+mypy = "*"
+pytest = "*"
+pytest-asyncio = "*"
+pytest-mock = "*"
+ruff = "*"
 
 [tool.mypy]
 ignore_missing_imports = true
