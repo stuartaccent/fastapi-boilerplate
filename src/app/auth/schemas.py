@@ -42,10 +42,10 @@ class UserRead(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr]
-    first_name: Optional[constr(min_length=1, max_length=120)]
-    last_name: Optional[constr(min_length=1, max_length=120)]
-    password: Optional[constr(min_length=6, max_length=79)]
+    email: Optional[EmailStr] = None
+    first_name: Optional[constr(min_length=1, max_length=120)] = None
+    last_name: Optional[constr(min_length=1, max_length=120)] = None
+    password: Optional[constr(min_length=6, max_length=79)] = None
 
 
 class VerifyRequest(BaseModel):
