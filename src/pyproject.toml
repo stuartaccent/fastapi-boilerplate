@@ -9,7 +9,7 @@ python = "^3.11"
 accentdatabase = "*"
 alembic = "*"
 asyncpg = "*"
-fastapi = {extras = ["all"], version = "^0.100.0"}
+fastapi = {extras = ["all"], version = "*"}
 pydantic-settings = "*"
 sentry-sdk = {extras = ["fastapi"], version = "*"}
 typer = {extras = ["all"], version = "*"}
