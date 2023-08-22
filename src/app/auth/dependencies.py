@@ -50,3 +50,4 @@ async def current_active_user(
 
 
 CurrentActiveUser = Annotated[UserRead, Depends(current_active_user)]
+# AdminScopedUser = Annotated[UserRead, Security(current_active_user, scopes=["admin"])]
