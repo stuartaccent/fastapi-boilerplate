@@ -11,6 +11,7 @@ from google.protobuf.json_format import MessageToDict
 
 from app.auth.exceptions import Forbidden, Unauthorized
 from app.auth.schemas import UserRead
+from app.config import settings
 from app.grpc import grpc_clients
 from protos import auth_pb2
 
@@ -23,7 +24,10 @@ Token = Annotated[str, Depends(oauth2_scheme)]
 async def current_user(token: Token) -> UserRead:
     try:
         request = auth_pb2.Token(token=token)
-        user = await grpc_clients["auth"].User(request, timeout=5)
+        user = await grpc_clients["auth"].User(
+            request,
+            timeout=settings.grpc_timeout,
+        )
         data = MessageToDict(
             user,
             including_default_value_fields=True,

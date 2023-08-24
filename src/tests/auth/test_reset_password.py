@@ -2,6 +2,7 @@ import pytest
 from grpc import StatusCode
 from grpc.aio import AioRpcError, Metadata
 
+from app.config import settings
 from protos import auth_pb2
 from tests.mocks import MockAuthClient
 
@@ -16,7 +17,10 @@ async def _run_reset_password_test(mocker, client, response_callback):
     response = client.post("/auth/reset-password", json=request_data)
 
     expected_request = auth_pb2.ResetPasswordRequest(**request_data)
-    mocked_client.ResetPassword.assert_called_once_with(expected_request, timeout=5)
+    mocked_client.ResetPassword.assert_called_once_with(
+        expected_request,
+        timeout=settings.grpc_timeout,
+    )
 
     return response
 

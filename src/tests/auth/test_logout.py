@@ -2,6 +2,7 @@ import pytest
 from grpc import StatusCode
 from grpc.aio import AioRpcError, Metadata
 
+from app.config import settings
 from app.main import app
 from protos import auth_pb2
 from tests.mocks import MockAuthClient
@@ -19,7 +20,10 @@ async def _run_logout_test(mocker, client, response_callback):
     )
 
     expected_request = auth_pb2.Token(token="test-token")
-    mocked_client.RevokeBearerToken.assert_called_once_with(expected_request, timeout=5)
+    mocked_client.RevokeBearerToken.assert_called_once_with(
+        expected_request,
+        timeout=settings.grpc_timeout,
+    )
 
     app.dependency_overrides = {}
 

@@ -8,6 +8,7 @@ from starlette.background import BackgroundTasks
 from app.auth import schemas
 from app.auth.dependencies import CurrentActiveUser, CurrentUser, Oauth2Form, Token
 from app.auth.exceptions import BadRequest, IncorrectLoginCredentials
+from app.config import settings
 from app.email.send import send_email
 from app.grpc import grpc_clients
 from protos import auth_pb2
@@ -23,7 +24,10 @@ async def login(data: Oauth2Form) -> schemas.BearerResponse:
             email=data.username,
             password=data.password,
         )
-        response = await grpc_clients["auth"].BearerToken(request, timeout=5)
+        response = await grpc_clients["auth"].BearerToken(
+            request,
+            timeout=settings.grpc_timeout,
+        )
         return MessageToDict(response, preserving_proto_field_name=True)
     except grpc.aio.AioRpcError as e:
         raise IncorrectLoginCredentials() from e
@@ -33,14 +37,20 @@ async def login(data: Oauth2Form) -> schemas.BearerResponse:
 async def logout(_: CurrentUser, token: Token) -> None:
     with contextlib.suppress(grpc.aio.AioRpcError):
         request = auth_pb2.Token(token=token)
-        await grpc_clients["auth"].RevokeBearerToken(request, timeout=5)
+        await grpc_clients["auth"].RevokeBearerToken(
+            request,
+            timeout=settings.grpc_timeout,
+        )
 
 
 @auth_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register(data: schemas.UserCreate) -> schemas.UserRead:
     try:
         request = auth_pb2.RegisterRequest(**data.model_dump())
-        response = await grpc_clients["auth"].Register(request, timeout=5)
+        response = await grpc_clients["auth"].Register(
+            request,
+            timeout=settings.grpc_timeout,
+        )
         return MessageToDict(
             response,
             preserving_proto_field_name=True,
@@ -57,7 +67,10 @@ async def verify_request(
 ) -> None:
     with contextlib.suppress(grpc.aio.AioRpcError):
         request = auth_pb2.VerifyUserTokenRequest(email=data.email)
-        response = await grpc_clients["auth"].VerifyUserToken(request, timeout=5)
+        response = await grpc_clients["auth"].VerifyUserToken(
+            request,
+            timeout=settings.grpc_timeout,
+        )
 
         print("Success: VerifyUserToken")
         print("-" * 60)
@@ -83,7 +96,10 @@ async def verify_request(
 async def verify(data: schemas.VerifyToken) -> schemas.UserRead:
     try:
         request = auth_pb2.Token(token=data.token)
-        response = await grpc_clients["auth"].VerifyUser(request, timeout=5)
+        response = await grpc_clients["auth"].VerifyUser(
+            request,
+            timeout=settings.grpc_timeout,
+        )
         return MessageToDict(
             response,
             preserving_proto_field_name=True,
@@ -100,7 +116,10 @@ async def forgot_password(
 ) -> None:
     with contextlib.suppress(grpc.aio.AioRpcError):
         request = auth_pb2.ResetPasswordTokenRequest(email=data.email)
-        response = await grpc_clients["auth"].ResetPasswordToken(request, timeout=5)
+        response = await grpc_clients["auth"].ResetPasswordToken(
+            request,
+            timeout=settings.grpc_timeout,
+        )
 
         print("Success: ResetPasswordToken")
         print("-" * 60)
@@ -129,7 +148,10 @@ async def reset_password(data: schemas.ResetPassword) -> None:
             token=data.token,
             password=data.password,
         )
-        await grpc_clients["auth"].ResetPassword(request, timeout=5)
+        await grpc_clients["auth"].ResetPassword(
+            request,
+            timeout=settings.grpc_timeout,
+        )
     except grpc.aio.AioRpcError as e:
         raise BadRequest(e.details()) from e
 
@@ -149,7 +171,10 @@ async def update_current_user(
         request = auth_pb2.UpdateUserRequest(
             token=token, **data.model_dump(exclude_unset=True)
         )
-        response = await grpc_clients["auth"].UpdateUser(request, timeout=5)
+        response = await grpc_clients["auth"].UpdateUser(
+            request,
+            timeout=settings.grpc_timeout,
+        )
         return MessageToDict(
             response,
             preserving_proto_field_name=True,

@@ -2,6 +2,7 @@ import pytest
 from grpc import StatusCode
 from grpc.aio import AioRpcError, Metadata
 
+from app.config import settings
 from protos import auth_pb2
 from tests.mocks import MockAuthClient
 
@@ -18,7 +19,10 @@ async def _run_login_test(mocker, client, response_callback):
     expected_request = auth_pb2.BearerTokenRequest(
         email="email@example.com", password="password"
     )
-    mocked_client.BearerToken.assert_called_once_with(expected_request, timeout=5)
+    mocked_client.BearerToken.assert_called_once_with(
+        expected_request,
+        timeout=settings.grpc_timeout,
+    )
 
     return response
 

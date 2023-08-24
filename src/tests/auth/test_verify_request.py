@@ -2,6 +2,7 @@ import pytest
 from grpc import StatusCode
 from grpc.aio import AioRpcError, Metadata
 
+from app.config import settings
 from protos import auth_pb2
 from tests.mocks import MockAuthClient
 
@@ -16,7 +17,10 @@ async def _run_verify_request_test(mocker, client, response_callback):
     response = client.post("/auth/verify-request", json=request_data)
 
     expected_request = auth_pb2.VerifyUserTokenRequest(**request_data)
-    mocked_client.VerifyUserToken.assert_called_once_with(expected_request, timeout=5)
+    mocked_client.VerifyUserToken.assert_called_once_with(
+        expected_request,
+        timeout=settings.grpc_timeout,
+    )
 
     return response
 
