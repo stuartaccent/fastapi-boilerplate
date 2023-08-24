@@ -52,8 +52,8 @@ async def test_verify_request_mocked_success(mocker, client_unauthenticated):
         subject="Complete your registration",
         template_context={
             "token": "verify-token",
-            "host": "http://localhost",
-            "site_name": "Example Inc.",
+            "host": settings.site_url,
+            "site_name": settings.site_name,
         },
         template_name_text="verify_request.txt",
         template_name_html="verify_request.html",

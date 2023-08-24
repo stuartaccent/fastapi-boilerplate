@@ -82,8 +82,8 @@ async def verify_request(
                 subject="Complete your registration",
                 template_context={
                     "token": token,
-                    "host": "http://localhost",
-                    "site_name": "Example Inc.",
+                    "host": settings.site_url,
+                    "site_name": settings.site_name,
                 },
                 template_name_text="verify_request.txt",
                 template_name_html="verify_request.html",
@@ -131,8 +131,8 @@ async def forgot_password(
                 subject="Reset your password",
                 template_context={
                     "token": token,
-                    "host": "http://localhost",
-                    "site_name": "Example Inc.",
+                    "host": settings.site_url,
+                    "site_name": settings.site_name,
                 },
                 template_name_text="forgot_password.txt",
                 template_name_html="forgot_password.html",

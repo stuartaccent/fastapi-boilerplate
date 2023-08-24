@@ -53,8 +53,8 @@ async def test_forgot_password_mocked_success(mocker, client_unauthenticated):
         to_address="test@example.com",
         subject="Reset your password",
         template_context={
-            "host": "http://localhost",
-            "site_name": "Example Inc.",
+            "host": settings.site_url,
+            "site_name": settings.site_name,
             "token": "reset-token",
         },
         template_name_html="forgot_password.html",
