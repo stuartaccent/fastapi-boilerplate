@@ -1,9 +1,4 @@
-# isort: off
 import asyncio
-import os
-
-if os.environ.get("TEST_DATABASE_URL"):
-    os.environ["DATABASE_URL"] = os.environ["TEST_DATABASE_URL"]
 
 import pytest
 import pytest_asyncio
