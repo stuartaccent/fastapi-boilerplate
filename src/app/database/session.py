@@ -51,4 +51,4 @@ async def get_session_dependency() -> AsyncSession:
     """
 
     async with get_session() as session:
-        return session
+        yield session
