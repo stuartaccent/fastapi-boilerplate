@@ -24,6 +24,11 @@ Update one or more package:
 poetry update <package>
 ```
 
+Show package dependency tree:
+```bash
+poetry show --tree
+```
+
 ## Running tests
 
 From the docker container terminal inside /app.
