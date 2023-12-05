@@ -2,7 +2,7 @@
 
 ## Running
 
-Using docker compose watch:
+Using docker compose:
 ```bash
 docker compose up
 ```
