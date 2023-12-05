@@ -1,5 +1,12 @@
 # Fastapi Boilerplate
 
+## Running
+
+Using docker compose watch:
+```bash
+docker compose up
+```
+
 ## Installing python packages
 
 From the docker container terminal inside /app.
