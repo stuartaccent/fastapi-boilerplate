@@ -1,4 +1,4 @@
-FROM        accent/python-uvicorn-gunicorn:3.11-slim as base
+FROM        accent/python-uvicorn-gunicorn:3.12-slim as base
 
 ARG         ENVIRONMENT=production
 
