@@ -14,7 +14,7 @@ async def _run_verify_request_test(mocker, client, response_callback):
     mocked_client.VerifyUserToken = mocker.AsyncMock(side_effect=response_callback)
 
     request_data = {"email": "test@example.com"}
-    response = client.post("/auth/verify-request", json=request_data)
+    response = await client.post("/auth/verify-request", json=request_data)
 
     expected_request = auth_pb2.VerifyUserTokenRequest(**request_data)
     mocked_client.VerifyUserToken.assert_called_once_with(
@@ -25,7 +25,7 @@ async def _run_verify_request_test(mocker, client, response_callback):
     return response
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_verify_request_mocked_success(mocker, client_unauthenticated):
     mocked_mail = mocker.patch("app.auth.routes.send_email")
 
@@ -60,7 +60,7 @@ async def test_verify_request_mocked_success(mocker, client_unauthenticated):
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_verify_request_mocked_error(mocker, client_unauthenticated):
     mocked_mail = mocker.patch("app.auth.routes.send_email")
 

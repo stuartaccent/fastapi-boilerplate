@@ -21,7 +21,7 @@ async def _run_register_test(mocker, client, response_callback):
         "last_name": "User",
         "password": "password",
     }
-    response = client.post("/auth/register", json=request_data)
+    response = await client.post("/auth/register", json=request_data)
 
     expected_request = auth_pb2.RegisterRequest(**request_data)
     mocked_client.Register.assert_called_once_with(
@@ -32,7 +32,7 @@ async def _run_register_test(mocker, client, response_callback):
     return response
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_register_mocked_success(mocker, client_unauthenticated):
     grpc_response = auth_pb2.UserResponse(
         id="b67764c6-0fb1-4927-9613-3138c226d94e",
@@ -61,7 +61,7 @@ async def test_register_mocked_success(mocker, client_unauthenticated):
     assert UserRead(**response.json()) == UserRead(**grpc_response_dict)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_register_mocked_error(mocker, client_unauthenticated):
     async def create_rpc_error(*args, **kwargs):
         raise AioRpcError(

@@ -41,7 +41,7 @@ poetry show --tree
 From the docker container terminal inside /app.
 
 ```bash
-pytest --asyncio-mode=auto
+pytest
 ```
 
 ## Auto Code Linting

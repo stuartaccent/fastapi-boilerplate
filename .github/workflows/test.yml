@@ -57,4 +57,4 @@ jobs:
         PYTHONUNBUFFERED: 1
       run: |
         cd src;
-        pytest --asyncio-mode=auto;
+        pytest;

@@ -14,7 +14,7 @@ async def _run_reset_password_test(mocker, client, response_callback):
     mocked_client.ResetPassword = mocker.AsyncMock(side_effect=response_callback)
 
     request_data = {"token": "reset-token", "password": "password"}
-    response = client.post("/auth/reset-password", json=request_data)
+    response = await client.post("/auth/reset-password", json=request_data)
 
     expected_request = auth_pb2.ResetPasswordRequest(**request_data)
     mocked_client.ResetPassword.assert_called_once_with(
@@ -25,7 +25,7 @@ async def _run_reset_password_test(mocker, client, response_callback):
     return response
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_reset_password_mocked_success(mocker, client_unauthenticated):
     grpc_response = auth_pb2.Empty()
 
@@ -41,7 +41,7 @@ async def test_reset_password_mocked_success(mocker, client_unauthenticated):
     assert response.json() is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_reset_password_mocked_error(mocker, client_unauthenticated):
     async def create_rpc_error(*args, **kwargs):
         raise AioRpcError(

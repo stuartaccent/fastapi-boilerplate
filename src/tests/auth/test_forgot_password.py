@@ -16,7 +16,7 @@ async def _run_forgot_password_test(mocker, client, response_callback):
     )
 
     request_data = {"email": "test@example.com"}
-    response = client.post("/auth/forgot-password", json=request_data)
+    response = await client.post("/auth/forgot-password", json=request_data)
 
     expected_request = auth_pb2.ResetPasswordTokenRequest(**request_data)
     mocked_client.ResetPasswordToken.assert_called_once_with(
@@ -27,7 +27,7 @@ async def _run_forgot_password_test(mocker, client, response_callback):
     return response
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_forgot_password_mocked_success(mocker, client_unauthenticated):
     mocked_mail = mocker.patch("app.auth.routes.send_email")
 
@@ -62,7 +62,7 @@ async def test_forgot_password_mocked_success(mocker, client_unauthenticated):
     )
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_forgot_password_mocked_error(mocker, client_unauthenticated):
     mocked_mail = mocker.patch("app.auth.routes.send_email")
 

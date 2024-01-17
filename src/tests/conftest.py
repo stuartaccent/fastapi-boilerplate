@@ -1,12 +1,9 @@
-import asyncio
-
 import pytest
-import pytest_asyncio
 from accentdatabase.testing import recreate_postgres_database
 from alembic import command
 from alembic.config import Config
+from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.testclient import TestClient
 
 from app.auth.dependencies import current_user
 from app.auth.exceptions import Unauthorized
@@ -25,18 +22,16 @@ def run_alembic_upgrade(connection, cfg):
 
 
 @pytest.fixture(scope="session")
-def event_loop(request):
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+def anyio_backend():
+    return "asyncio"
 
 
-@pytest_asyncio.fixture(name="db_setup", scope="session", autouse=True)
+@pytest.fixture(name="db_setup", scope="session", autouse=True)
 async def db_setup_fixture():
     await recreate_postgres_database(settings.database_url)
 
 
-@pytest_asyncio.fixture(name="db_migrations", scope="session", autouse=True)
+@pytest.fixture(name="db_migrations", scope="session", autouse=True)
 async def db_migrations_fixture(db_setup):
     async with engine.begin() as conn:
         await conn.run_sync(run_alembic_upgrade, Config("alembic.ini"))
@@ -46,7 +41,7 @@ async def db_migrations_fixture(db_setup):
     await engine.dispose()
 
 
-@pytest_asyncio.fixture(name="db_session")
+@pytest.fixture(name="db_session")
 async def db_session_fixture():
     connection = await engine.connect()
     trans = await connection.begin()
@@ -58,22 +53,24 @@ async def db_session_fixture():
 
 
 @pytest.fixture
-def client_authenticated(db_session: AsyncSession) -> TestClient:
+async def client_authenticated(db_session: AsyncSession) -> AsyncClient:
     def mock_user():
         user_type = UserType(**fixtures.user_type, scopes=["admin"])
         return UserRead(**fixtures.user, user_type=user_type)
 
     app.dependency_overrides[get_session] = lambda: db_session
     app.dependency_overrides[current_user] = mock_user
-    yield TestClient(app)
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        yield client
     app.dependency_overrides = {}
 
 
 @pytest.fixture
-def client_unauthenticated() -> TestClient:
+async def client_unauthenticated() -> AsyncClient:
     def no_auth():
         raise Unauthorized()
 
     app.dependency_overrides[current_user] = no_auth
-    yield TestClient(app)
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        yield client
     app.dependency_overrides = {}

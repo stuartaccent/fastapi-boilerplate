@@ -14,7 +14,7 @@ async def _run_logout_test(mocker, client, response_callback):
 
     mocked_client.RevokeBearerToken = mocker.AsyncMock(side_effect=response_callback)
 
-    response = client.post(
+    response = await client.post(
         "/auth/token/logout",
         headers={"Authorization": "Bearer test-token"},
     )
@@ -30,7 +30,7 @@ async def _run_logout_test(mocker, client, response_callback):
     return response
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_logout_mocked_success(mocker, client_authenticated):
     grpc_response = auth_pb2.Empty()
 
@@ -44,7 +44,7 @@ async def test_logout_mocked_success(mocker, client_authenticated):
     assert response.json() is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_logout_mocked_error(mocker, client_authenticated):
     async def create_rpc_error(*args, **kwargs):
         raise AioRpcError(

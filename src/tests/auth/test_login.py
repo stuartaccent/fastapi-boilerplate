@@ -14,7 +14,7 @@ async def _run_login_test(mocker, client, response_callback):
     mocked_client.BearerToken = mocker.AsyncMock(side_effect=response_callback)
 
     request_data = {"username": "email@example.com", "password": "password"}
-    response = client.post("/auth/token/login", data=request_data)
+    response = await client.post("/auth/token/login", data=request_data)
 
     expected_request = auth_pb2.BearerTokenRequest(
         email="email@example.com", password="password"
@@ -27,7 +27,7 @@ async def _run_login_test(mocker, client, response_callback):
     return response
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_login_mocked_success(mocker, client_unauthenticated):
     grpc_response = auth_pb2.BearerTokenResponse(
         access_token="test-token",
@@ -49,7 +49,7 @@ async def test_login_mocked_success(mocker, client_unauthenticated):
     }
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_login_mocked_error(mocker, client_unauthenticated):
     async def create_rpc_error(*args, **kwargs):
         raise AioRpcError(
