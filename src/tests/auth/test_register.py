@@ -55,8 +55,8 @@ async def test_register_mocked_success(mocker, client_unauthenticated):
     assert response.status_code == 201
     grpc_response_dict = MessageToDict(
         grpc_response,
+        always_print_fields_with_no_presence=True,
         preserving_proto_field_name=True,
-        including_default_value_fields=True,
     )
     assert UserRead(**response.json()) == UserRead(**grpc_response_dict)
 

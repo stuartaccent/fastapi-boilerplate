@@ -53,8 +53,8 @@ async def register(data: schemas.UserCreate) -> schemas.UserRead:
         )
         return MessageToDict(
             response,
+            always_print_fields_with_no_presence=True,
             preserving_proto_field_name=True,
-            including_default_value_fields=True,
         )
     except grpc.aio.AioRpcError as e:
         raise BadRequest(e.details()) from e
@@ -102,8 +102,8 @@ async def verify(data: schemas.VerifyToken) -> schemas.UserRead:
         )
         return MessageToDict(
             response,
+            always_print_fields_with_no_presence=True,
             preserving_proto_field_name=True,
-            including_default_value_fields=True,
         )
     except grpc.aio.AioRpcError as e:
         raise BadRequest(e.details()) from e
@@ -177,8 +177,8 @@ async def update_current_user(
         )
         return MessageToDict(
             response,
+            always_print_fields_with_no_presence=True,
             preserving_proto_field_name=True,
-            including_default_value_fields=True,
         )
     except grpc.aio.AioRpcError as e:
         raise BadRequest(e.details()) from e
