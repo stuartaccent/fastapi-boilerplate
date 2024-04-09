@@ -53,7 +53,7 @@ black .
 ```
 
 ```bash
-ruff --fix .
+ruff check --fix .
 ```
 
 ## Using the CLI

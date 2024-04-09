@@ -48,7 +48,7 @@ jobs:
       run: |
         cd src;
         black --check --diff . ;
-        ruff --diff . ;
+        ruff check --diff . ;
 
     - name: Run Tests
       env:
