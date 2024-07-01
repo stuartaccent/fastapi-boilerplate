@@ -2,8 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware import Middleware
-from starlette.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.api.routes.root import router as root_router
 from app.auth.routes import auth_router, user_router
@@ -42,24 +41,21 @@ async def lifespan(app: FastAPI):
     grpc_clients.clear()
 
 
-middleware = [
-    Middleware(
-        TrustedHostMiddleware,
-        allowed_hosts=settings.allowed_hosts,
-    ),
-    Middleware(
-        CORSMiddleware,
-        allow_origins=settings.allow_origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    ),
-]
-
 app = FastAPI(
     title="myapi",
-    middleware=middleware,
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=settings.allowed_hosts,
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allow_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(root_router)

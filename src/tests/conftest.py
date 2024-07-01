@@ -2,7 +2,7 @@ import pytest
 from accentdatabase.testing import recreate_postgres_database
 from alembic import command
 from alembic.config import Config
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.dependencies import current_user
@@ -60,7 +60,9 @@ async def client_authenticated(db_session: AsyncSession) -> AsyncClient:
 
     app.dependency_overrides[get_session] = lambda: db_session
     app.dependency_overrides[current_user] = mock_user
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         yield client
     app.dependency_overrides = {}
 
@@ -71,6 +73,8 @@ async def client_unauthenticated() -> AsyncClient:
         raise Unauthorized()
 
     app.dependency_overrides[current_user] = no_auth
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
         yield client
     app.dependency_overrides = {}
