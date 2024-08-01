@@ -1,4 +1,4 @@
-FROM        accent/python-uvicorn:3.12-slim as base
+FROM        accent/python-uvicorn:3.12-slim AS base
 
 ARG         ENVIRONMENT=production
 
@@ -11,7 +11,7 @@ RUN         pip install poetry \
             && poetry install $(test "$ENVIRONMENT" = production && echo "--only main") --no-interaction --no-ansi \
             && rm -rf /root/.cache/pypoetry
 
-FROM        base as final
+FROM        base AS final
 
 ENV         PYTHONDONTWRITEBYTECODE=1
 ENV         PYTHONFAULTHANDLER=1
