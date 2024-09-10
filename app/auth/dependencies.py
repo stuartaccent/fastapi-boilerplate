@@ -13,7 +13,7 @@ from app.auth.exceptions import Forbidden, Unauthorized
 from app.auth.schemas import UserRead
 from app.config import settings
 from app.grpc import grpc_clients
-from protos import auth_pb2
+from app.protos import auth_pb2
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token/login")
 

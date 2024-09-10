@@ -1,22 +1,27 @@
-FROM        accent/python-uvicorn:3.12-slim AS base
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:0.4.7 /uv /bin/uv
 
-ARG         ENVIRONMENT=production
+ARG ENVIRONMENT=prod
 
-WORKDIR     /app
+WORKDIR /app
 
-COPY        ./src/pyproject.toml ./src/poetry.lock ./
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
 
-RUN         pip install poetry \
-            && poetry config virtualenvs.create false \
-            && poetry install $(test "$ENVIRONMENT" = production && echo "--only main") --no-interaction --no-ansi \
-            && rm -rf /root/.cache/pypoetry
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync \
+    --frozen \
+    --no-install-project \
+    $(if [ "$ENVIRONMENT" = "prod" ]; then echo "--no-dev"; fi)
 
-FROM        base AS final
+ADD . /app
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync \
+    --frozen \
+    $(if [ "$ENVIRONMENT" = "prod" ]; then echo "--no-dev"; fi)
 
-ENV         PYTHONDONTWRITEBYTECODE=1
-ENV         PYTHONFAULTHANDLER=1
-ENV         PYTHONPATH=/app
+ENV PATH="/app/.venv/bin:$PATH"
 
-WORKDIR     /app
-
-COPY        ./src .
+CMD ["/app/start.sh"]

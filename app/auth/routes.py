@@ -9,9 +9,9 @@ from app.auth import schemas
 from app.auth.dependencies import CurrentActiveUser, CurrentUser, Oauth2Form, Token
 from app.auth.exceptions import BadRequest, IncorrectLoginCredentials
 from app.config import settings
-from app.email.send import send_email
 from app.grpc import grpc_clients
-from protos import auth_pb2
+from app.protos import auth_pb2
+from app.smtp.send import send_email
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 user_router = APIRouter(prefix="/users", tags=["users"])

@@ -4,65 +4,41 @@
 
 Using docker compose:
 ```bash
-docker compose up
+docker compose up --watch
 ```
 
-## Installing python packages
+## Python Packages
 
-From the docker container terminal inside /app.
-
-Install a package:
+install:
 ```bash
-poetry add <package>
+./run.sh uv add <package==1.0.0>
 ```
 
-Install a dev package:
+remove:
 ```bash
-poetry add --dev <package>
-```
-
-Update all package:
-```bash
-poetry update
-```
-
-Update one or more package:
-```bash
-poetry update <package>
-```
-
-Show package dependency tree:
-```bash
-poetry show --tree
+./run.sh uv remove <package>
 ```
 
 ## Running tests
 
-From the docker container terminal inside /app.
-
 ```bash
-pytest
+./run.sh uv run pytest app
 ```
 
 ## Auto Code Linting
 
-From the docker container terminal inside /app.
-
 ```bash
-black .
+./run.sh uv run black app
 ```
 
 ```bash
-ruff check --fix .
+./run.sh uv run ruff check --fix app
 ```
 
 ## Using the CLI
 
 Several commands have been created to do things like create users.
-
-From the docker container terminal inside /app.
-
 ```bash
 # to view available commands
-python cli.py --help
+./run.sh uv run app/cli.py --help
 ```

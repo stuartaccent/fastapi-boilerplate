@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from protos import email_pb2 as email__pb2
+from app.protos import email_pb2 as email__pb2
 
 
 class EmailServiceStub(object):

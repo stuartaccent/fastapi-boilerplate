@@ -1,0 +1,10 @@
+.git
+.github
+.idea
+.venv
+.gitignore
+compose.yml
+Dockerfile
+example.http
+README.md
+run.sh

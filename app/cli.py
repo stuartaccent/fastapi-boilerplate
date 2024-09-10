@@ -4,7 +4,7 @@ import typer
 
 from app.config import settings
 from app.grpc import AuthGrpcClient
-from protos import auth_pb2
+from app.protos import auth_pb2
 
 app = typer.Typer()
 

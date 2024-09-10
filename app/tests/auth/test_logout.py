@@ -4,8 +4,8 @@ from grpc.aio import AioRpcError, Metadata
 
 from app.config import settings
 from app.main import app
-from protos import auth_pb2
-from tests.mocks import MockAuthClient
+from app.protos import auth_pb2
+from app.tests.mocks import MockAuthClient
 
 
 async def _run_logout_test(mocker, client, response_callback):

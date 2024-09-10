@@ -3,8 +3,8 @@ from typing import TypedDict
 
 import grpc
 
-from protos.auth_pb2_grpc import AuthenticationStub
-from protos.email_pb2_grpc import EmailServiceStub
+from app.protos.auth_pb2_grpc import AuthenticationStub
+from app.protos.email_pb2_grpc import EmailServiceStub
 
 
 class GrpcClientBase:

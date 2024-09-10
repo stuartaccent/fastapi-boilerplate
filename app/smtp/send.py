@@ -5,9 +5,9 @@ import grpc
 from starlette.templating import Jinja2Templates
 
 from app.config import settings
-from app.email.utils import minify_html
 from app.grpc import grpc_clients
-from protos.email_pb2 import EmailInfo, EmailRequest
+from app.protos.email_pb2 import EmailInfo, EmailRequest
+from app.smtp.utils import minify_html
 
 dir_path = dirname(realpath(__file__))
 email_templates = Jinja2Templates(directory=join(dir_path, "templates"))

@@ -13,7 +13,7 @@ from app.database import tables  # noqa: F401
 from app.database.engine import engine
 from app.database.session import async_session, get_session
 from app.main import app
-from tests import fixtures
+from app.tests import fixtures
 
 
 def run_alembic_upgrade(connection, cfg):

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import grpc
 
 from app.auth.exceptions import Unauthorized
-from protos.auth_pb2_grpc import AuthenticationStub
+from app.protos.auth_pb2_grpc import AuthenticationStub
 
 
 class MockAuthClient(AuthenticationStub):

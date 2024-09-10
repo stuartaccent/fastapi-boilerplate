@@ -30,31 +30,22 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Set up Python 3.12.x
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.12.x
+    - name: Install uv
+      uses: astral-sh/setup-uv@v2
 
-    - name: Install poetry
-      run: |
-        python -m pip install --upgrade poetry wheel
+    - name: Set up Python
+      run: uv python install
 
-    - name: Install dependencies
-      run: |
-        cd src;
-        poetry config virtualenvs.create false && poetry install;
+    - name: Install the project
+      run: uv sync --all-extras --dev
 
     - name: Run Linting
       run: |
-        cd src;
-        black --check --diff . ;
-        ruff check --diff . ;
+        uv run black --check --diff app;
+        uv run ruff check --diff app;
 
     - name: Run Tests
       env:
         DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/appdb
         EMAIL_FROM_ADDRESS: support@example.com
-        PYTHONUNBUFFERED: 1
-      run: |
-        cd src;
-        pytest;
+      run: uv run pytest app
