@@ -28,13 +28,15 @@ dev-dependencies = [
 line-length = 88
 exclude = '''
   /(
-    migrations
+    .venv
+    | migrations
     | protos
   )/
 '''
 
 [tool.ruff]
 exclude = [
+    ".venv",
     "migrations",
     "protos",
 ]

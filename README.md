@@ -22,17 +22,17 @@ remove:
 ## Running tests
 
 ```bash
-./run.sh uv run pytest app
+./run.sh uv run pytest
 ```
 
 ## Auto Code Linting
 
 ```bash
-./run.sh uv run black app
+./run.sh uv run black .
 ```
 
 ```bash
-./run.sh uv run ruff check --fix app
+./run.sh uv run ruff check --fix .
 ```
 
 ## Using the CLI
