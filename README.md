@@ -7,7 +7,7 @@ Using docker compose:
 docker compose up --watch
 ```
 
-## Python Packages
+## Python packages
 
 install:
 ```bash
@@ -25,10 +25,10 @@ remove:
 ./run.sh uv run pytest
 ```
 
-## Auto Code Linting
+## Code linting
 
 ```bash
-./run.sh uv run black .
+./run.sh uv run ruff format .
 ```
 
 ```bash

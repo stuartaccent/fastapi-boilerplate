@@ -41,8 +41,8 @@ jobs:
 
     - name: Run Linting
       run: |
-        uv run black --check --diff app;
-        uv run ruff check --diff app;
+        uv run ruff format --check .;
+        uv run ruff check --diff .;
 
     - name: Run Tests
       env:

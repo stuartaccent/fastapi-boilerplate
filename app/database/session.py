@@ -14,7 +14,8 @@ async_session = async_sessionmaker(
 @asynccontextmanager
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """
-    This method is an async context manager that provides an asynchronous SQLAlchemy session.
+    This method is an async context manager that provides an asynchronous SQLAlchemy
+    session.
 
     @return: An async generator that yields an asynchronous SQLAlchemy session object.
 
