@@ -1,10 +1,11 @@
 FROM python:3.12-slim
-COPY --from=ghcr.io/astral-sh/uv:0.4.17 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.4.27 /uv /bin/uv
 
 ARG ENVIRONMENT=prod
 
 WORKDIR /app
 
+ENV PYTHONPATH=/app
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 
@@ -14,13 +15,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync \
     --frozen \
     --no-install-project \
-    $(if [ "$ENVIRONMENT" = "prod" ]; then echo "--no-dev"; fi)
+    $(if [ "$ENVIRONMENT" = "prod" ]; then echo "--no-group dev"; fi)
 
 ADD . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync \
     --frozen \
-    $(if [ "$ENVIRONMENT" = "prod" ]; then echo "--no-dev"; fi)
+    $(if [ "$ENVIRONMENT" = "prod" ]; then echo "--no-group dev"; fi)
 
 ENV PATH="/app/.venv/bin:$PATH"
 
