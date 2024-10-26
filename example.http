@@ -2,7 +2,7 @@
 POST http://localhost/auth/token/login
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=&username=admin%40example.com&password=password
+grant_type=password&username=admin%40example.com&password=password
 
 > {%
     client.global.set("auth_token", response.body.access_token);
