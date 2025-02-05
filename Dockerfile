@@ -1,5 +1,5 @@
 FROM python:3.13-slim
-COPY --from=ghcr.io/astral-sh/uv:0.5.13 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.5.28 /uv /bin/uv
 
 ARG ENVIRONMENT=prod
 
